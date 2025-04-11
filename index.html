@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weight Loss Goals</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Calibri, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      background-color: #f5f2f2;
+      position: relative;
+    }
+
+    .back-arrow {
+      position: absolute;
+      left: 2rem;
+      top: 2rem;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #000000;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: transform 0.3s ease;
+    }
+
+    .back-arrow:hover {
+      transform: translateX(-5px);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #000000;
+      text-align: center;
+    }
+
+    .question-holder {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .goal-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .goal-option {
+      width: 100%;
+      background-color: #fff5cc;
+      padding: 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid #000000;
+      text-align: center;
+      font-size: 1.25rem;
+      color: #000000;
+    }
+
+    .goal-option.selected {
+      background-color: #ffcb00;
+      border-width: 3px;
+    }
+
+    .goal-option:hover {
+      background-color: #ffe580;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .goal-option:active {
+      transform: translateY(0);
+    }
+
+    .next-button {
+      width: 80%;
+      padding: 1.2rem;
+      margin-top: 2rem;
+      background-color: #ffcb00;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    .next-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .next-button:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .goal-option {
+        font-size: 1rem;
+        padding: 1.2rem;
+      }
+
+      body {
+        padding: 1rem;
+      }
+
+      .back-arrow {
+        left: 1rem;
+        top: 1rem;
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get/create currentQuestion from/in localStorage
+      let currentQuestion = localStorage.getItem('currentQuestion');
+      if (currentQuestion === null) {
+        localStorage.setItem('currentQuestion', 0);
+        currentQuestion = 0;
+      } else {
+        currentQuestion = Number(currentQuestion);
+      }
+
+      // Get/create savedAnswers from/in localStorage
+      let savedAnswers = localStorage.getItem('savedAnswers');
+      if (savedAnswers === null) {
+        localStorage.setItem('savedAnswers', JSON.stringify({}));
+        savedAnswers = {};
+      } else {
+        savedAnswers = JSON.parse(savedAnswers);
+      }
+
+      const body = document.getElementsByTagName('body')[0];
+      const questions = [
+        {
+          header: 'header 1',
+          options: [
+            'options 1',
+            'options 2',
+            'options 3',
+          ]
+        },
+        {
+          header: 'header 2',
+          options: [
+            'options 4',
+            'options 5',
+            'options 6',
+          ]
+        },
+        {
+          header: 'header 3',
+          options: [
+            'options 7',
+            'options 8',
+            'options 9',
+          ]
+        },
+      ]
+
+      // Create and add to "body" all questions
+      questions.forEach((question, qIndex) => {
+        const divQuestionHolder = document.createElement('div');
+        divQuestionHolder.className = 'question-holder';
+        const h1 = document.createElement('h1');
+        h1.textContent = question.header;
+        divQuestionHolder.appendChild(h1)
+
+        const divGoalContainer = document.createElement('div');
+        divGoalContainer.className = 'goal-container';
+
+        question.options.forEach((option, aIndex) => {
+          const divGoalOption = document.createElement('div');
+          divGoalOption.className = 'goal-option';
+          divGoalOption.q = qIndex;
+          divGoalOption.a = aIndex;
+          divGoalOption.textContent = option;
+          divGoalContainer.appendChild(divGoalOption)
+        });
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'next-button';
+        nextBtn.textContent = 'Next';
+
+        divGoalContainer.appendChild(nextBtn)
+        divQuestionHolder.appendChild(divGoalContainer)
+        body.appendChild(divQuestionHolder);
+      });
+
+      const allAnswersOfAllQuestions = Array.from(document.getElementsByClassName('goal-option'));
+
+      // pre-select answers from savedAnswers
+      for (let i = 0; i < Object.keys(savedAnswers).length; i++) {
+        const currQuestion = Number(Object.keys(savedAnswers)[i]);
+
+        const answers = savedAnswers[currQuestion];
+        for (let y = 0; y < answers.length; y++) {
+          const answer = answers[y];
+          const foundAnswer = allAnswersOfAllQuestions.filter(currAnswer => currAnswer.q === currQuestion && currAnswer.a === answer);
+          if (foundAnswer.length > 0) foundAnswer[0].classList.add('selected');
+        }
+      }
+
+      // Show current question
+      const renderedQuestions = document.getElementsByClassName('question-holder');
+      renderedQuestions[currentQuestion].style.display = 'block';
+
+      // Add click event on all Next buttons
+      const nextBtns = document.getElementsByClassName('next-button');
+
+      for (let i = 0; i < nextBtns.length; i++) {
+        const nextBtn = nextBtns[i];
+
+        nextBtn.addEventListener('click', () => {
+          if (currentQuestion === questions.length - 1) return;
+
+          const selectedOptions = allAnswersOfAllQuestions.filter(option => option.q === currentQuestion).filter(option => option.classList.contains('selected'));
+          if (selectedOptions.length > 0) {
+            const seledtedAnswers = selectedOptions.map(selectedOption => selectedOption.a);
+            savedAnswers[selectedOptions[0].q] = seledtedAnswers;
+            localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+          }
+
+          renderedQuestions[currentQuestion].style.display = 'none';
+          currentQuestion += 1;
+          localStorage.setItem('currentQuestion', currentQuestion)
+          renderedQuestions[currentQuestion].style.display = 'block';
+        });
+      }
+
+      // Add click event on Previous question button
+      const prevQuestionBtn = document.getElementsByClassName('back-arrow')[0];
+      prevQuestionBtn.addEventListener('click', () => {
+        if (currentQuestion > 0) {
+          renderedQuestions[currentQuestion].style.display = 'none';
+          currentQuestion -= 1;
+          localStorage.setItem('currentQuestion', currentQuestion)
+          renderedQuestions[currentQuestion].style.display = 'block';
+        }
+      })
+
+      const answers = document.querySelectorAll('.goal-option');
+
+      const singleAnswerSelect = function () {
+        // Remove selected class from all answers of the current question
+        allAnswersOfAllQuestions.filter(answer => answer.q === currentQuestion).forEach(opt => opt.classList.remove('selected'));
+        // Add selected class to clicked option
+        this.classList.add('selected');
+      }
+
+      // Add click event on available Answers of a question
+      answers.forEach(option => {
+        option.addEventListener('click', singleAnswerSelect);
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <a href="#" class="back-arrow">←</a>
+</body>
+
+</html>
