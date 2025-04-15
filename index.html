@@ -159,6 +159,13 @@
     const pet_name = 'pet_name';
     const mealplan_goal = 'mealplan_goal';
     const species = 'species';
+    const breed = 'breed';
+    const gender = 'gender';
+    const female_castration = 'female_castration';
+    const male_castration = 'male_castration';
+    const due_date = 'due_date';
+
+
 
     function onMultiSelectClick(el) {
       el.classList.toggle("selected");
@@ -225,6 +232,41 @@
             }
           });
         }
+
+        if (savedAnswers?.breed) {
+          document.getElementById('step-6').getElementsByClassName('goal-option')[0].value = savedAnswers.breed;
+        }
+
+        if (savedAnswers?.gender) {
+          const btns = Array.from(document.getElementById('step-8').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.gender) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.female_castration) {
+          const btns = Array.from(document.getElementById('step-9').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.female_castration) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.male_castration) {
+          const btns = Array.from(document.getElementById('step-10').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.male_castration) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+
+
+
       }
       //#endregion
 
@@ -233,6 +275,16 @@
       prevQuestionBtn.addEventListener('click', () => {
         if (currentStep > 1) {
           document.getElementById(`step-${currentStep}`).style.display = 'none';
+
+          if (
+            (currentStep === 7 && savedAnswers[species] === 'ferret') ||
+            (currentStep === 8 && savedAnswers[species] !== 'ferret') ||
+            (currentStep === 10 && savedAnswers[gender] === 'a gentleman') ||
+            (currentStep === 11 && savedAnswers[gender] === 'a lady')
+          ) {
+            currentStep -= 1;
+          }
+
           currentStep -= 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -311,16 +363,122 @@
       //#endregion
 
       //#region step-5
-      const step5singleChoiceBtns = document.getElementById('step-5').getElementsByTagName('button');
+      const step5 = document.getElementById('step-5');
+      const step5singleChoiceBtns = step5.getElementsByTagName('button');
+
       for (let i = 0; i < step5singleChoiceBtns.length; i++) {
         step5singleChoiceBtns[i].addEventListener('click', function () {
-          savedAnswers[species] = this.textContent.trim();
+          const selectedItem = this.textContent.trim();
+          savedAnswers[species] = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step5singleChoiceBtns)
           this.classList.add('selected')
 
-          document.getElementById('step-5').style.display = 'none';
+          step5.style.display = 'none';
+          currentStep += 1;
+
+          if (selectedItem === 'ferret') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        })
+      }
+      //#endregion
+
+      //#region step-6
+      const step6 = document.getElementById('step-6');
+      const step6inp = step6.getElementsByTagName('input')[0];
+
+      step6inp.addEventListener('input', function () {
+        if (this.value.length > 30) return;
+        this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+      })
+
+      step6.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const value = step6inp.value;
+
+        if (value.length > 0) {
+          savedAnswers[breed] = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          step6.style.display = 'none';
+          currentStep += 2;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+      })
+      //#endregion
+
+      //#region step-7
+      const step7 = document.getElementById('step-7');
+      step7.getElementsByClassName('pet_name')[0].textContent = savedAnswers[pet_name];
+      step7.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        step7.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+      })
+      //#endregion
+
+      //#region step-8
+      const step8 = document.getElementById('step-8');
+      const step8singleChoiceBtns = step8.getElementsByTagName('button');
+
+      for (let i = 0; i < step8singleChoiceBtns.length; i++) {
+        step8singleChoiceBtns[i].addEventListener('click', function () {
+          const textContent = this.textContent.trim();
+          const selectedItem = textContent;
+          savedAnswers[gender] = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step8singleChoiceBtns)
+          this.classList.add('selected')
+
+          step8.style.display = 'none';
+          currentStep += 1;
+          if (textContent === 'a gentleman') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        })
+      }
+      //#endregion
+
+      //#region step-9
+      const step9 = document.getElementById('step-9');
+      const step9singleChoiceBtns = step9.getElementsByTagName('button');
+
+      for (let i = 0; i < step9singleChoiceBtns.length; i++) {
+        step9singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers[female_castration] = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step9singleChoiceBtns)
+          this.classList.add('selected')
+
+          step9.style.display = 'none';
+          currentStep += 2;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        })
+      }
+      //#endregion
+
+      //#region step-9
+      const step10 = document.getElementById('step-10');
+      const step10singleChoiceBtns = step10.getElementsByTagName('button');
+
+      for (let i = 0; i < step10singleChoiceBtns.length; i++) {
+        step10singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers[male_castration] = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step10singleChoiceBtns)
+          this.classList.add('selected')
+
+          step10.style.display = 'none';
           currentStep += 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -415,9 +573,55 @@
     </div>
   </div>
 
-  <div id="step-6" class="question-holder" name="species">
-    6
+  <div id="step-6" class="question-holder" name="breed">
+    <h1>What breed is <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <input class="goal-option" type="text" placeholder=" If there is no breed, type 'Mixed' ;) " maxlength="30">
+    </div>
+    <button class="next-button">Next</button>
   </div>
+
+  <div id="step-7" class="question-holder" name="kiss_ferret">
+    <p><b>Awww! Our favorite!</b></p>
+    <br>
+    <p>Kiss <b class="pet_name"></b>'s nose for us ❤️</p>
+    <button class="next-button">Next</button>
+  </div>
+
+  <div id="step-8" class="question-holder" name="gender">
+    <h1><b class="pet_name"></b> is</h1>
+    <div class="goal-container">
+      <button class="goal-option">a lady</button>
+      <button class="goal-option">a gentleman</button>
+    </div>
+  </div>
+
+  <div id="step-9" class="question-holder" name="female_castration">
+    <h1>And is</h1>
+    <div class="goal-container">
+      <button class="goal-option">intact</button>
+      <button class="goal-option">fixed</button>
+      <button class="goal-option">chemically castrated</button>
+      <button class="goal-option">pregnant</button>
+      <button class="goal-option">nursing</button>
+    </div>
+  </div>
+
+  <div id="step-10" class="question-holder" name="male_castration">
+    <h1>And is</h1>
+    <div class="goal-container">
+      <button class="goal-option">intact</button>
+      <button class="goal-option">fixed</button>
+      <button class="goal-option">chemically castrated</button>
+    </div>
+  </div>
+
+  <div id="step-11" class="question-holder" name="due_date ">
+    <h1>11</h1>
+  </div>
+
+
+
 
   <div class="footer">
     <span>By choosing to type your pet name and continuing, you agree to our </span>
