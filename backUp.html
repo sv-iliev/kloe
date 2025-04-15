@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weight Loss Goals</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Calibri, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      background-color: #f5f2f2;
+      position: relative;
+    }
+
+    .back-arrow {
+      position: absolute;
+      left: 2rem;
+      top: 2rem;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #000000;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: transform 0.3s ease;
+    }
+
+    .back-arrow:hover {
+      transform: translateX(-5px);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #000000;
+      text-align: center;
+    }
+
+    .question-holder {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .goal-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .goal-option {
+      width: 100%;
+      background-color: #fff5cc;
+      padding: 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid #000000;
+      text-align: center;
+      font-size: 1.25rem;
+      color: #000000;
+    }
+
+    .goal-option.selected {
+      background-color: #ffcb00;
+      border-width: 3px;
+    }
+
+    .goal-option:hover {
+      background-color: #ffe580;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .goal-option:active {
+      transform: translateY(0);
+    }
+
+    .next-button {
+      width: 80%;
+      padding: 1.2rem;
+      margin-top: 2rem;
+      background-color: #ffcb00;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #000000;
+      transition: all 0.3s ease;
+    }
+
+    .next-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .next-button:active {
+      transform: translateY(0);
+    }
+
+    .footer {
+      display: block;
+    }
+
+    input.goal-option {
+      cursor: auto;
+    }
+
+    .screen-2 {
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .goal-option {
+        font-size: 1rem;
+        padding: 1.2rem;
+      }
+
+      body {
+        padding: 1rem;
+      }
+
+      .back-arrow {
+        left: 1rem;
+        top: 1rem;
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get/create currentQuestion from/in localStorage
+      let currentQuestion = localStorage.getItem('currentQuestion');
+      if (currentQuestion === null) {
+        localStorage.setItem('currentQuestion', 0);
+        currentQuestion = 0;
+      } else {
+        currentQuestion = Number(currentQuestion);
+      }
+
+      // Get/create savedAnswers from/in localStorage
+      let savedAnswers = JSON.parse(localStorage.getItem('savedAnswers'));
+      if (savedAnswers === null) {
+        savedAnswers = {};
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+      }
+
+      const screen2 = document.getElementsByClassName('screen-2')[0];
+      const contentHolder = document.getElementsByClassName('content-holder')[0];
+      const questions = [
+        {
+          type: 'input',
+          header: 'What is the name of your pet?',
+          name: 'pet_name',
+        },
+        null,
+        // {
+        //   header: 'header 2',
+        //   options: [
+        //     'options 4',
+        //     'options 5',
+        //     'options 6',
+        //   ]
+        // },
+        // {
+        //   header: 'header 3',
+        //   options: [
+        //     'options 7',
+        //     'options 8',
+        //     'options 9',
+        //   ]
+        // },
+
+      ]
+
+      // Create and add to "contentHolder" all questions
+      questions.forEach((question, qIndex) => {
+        if (question === null) return;
+
+        const questionHolder = document.createElement('div');
+        questionHolder.className = 'question-holder';
+        const h1 = document.createElement('h1');
+        h1.textContent = question.header;
+        questionHolder.appendChild(h1);
+
+        const divGoalContainer = document.createElement('div');
+        divGoalContainer.className = 'goal-container';
+
+        if (question.type === 'input') {
+          const goalOption = document.createElement('input');
+          goalOption.type = 'text';
+          goalOption.placeholder = 'example: Kloe';
+          goalOption.maxLength = 30;
+          goalOption.className = 'goal-option';
+          question?.name ? goalOption.name = question.name : null;
+
+          // Add input validation
+          goalOption.addEventListener('input', function (e) {
+            // Remove any non-alphanumeric characters
+            this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+          });
+
+          divGoalContainer.appendChild(goalOption);
+        } else {
+          question.options.forEach((option, aIndex) => {
+            const goalOption = document.createElement('div');
+            goalOption.className = 'goal-option';
+            goalOption.q = qIndex;
+            goalOption.a = aIndex;
+            goalOption.textContent = option;
+            divGoalContainer.appendChild(goalOption)
+          });
+        }
+
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'next-button';
+        nextBtn.textContent = 'Next';
+
+        divGoalContainer.appendChild(nextBtn)
+        questionHolder.appendChild(divGoalContainer)
+        contentHolder.appendChild(questionHolder);
+      });
+
+      const allAnswersOfAllQuestions = Array.from(document.getElementsByClassName('goal-option'));
+
+      // pre-select/fill answers from savedAnswers
+      const keys = Object.keys(savedAnswers);
+      for (let i = 0; i < keys.length; i++) {
+        const currQuestion = Number(keys[i]);
+        const answers = savedAnswers[currQuestion];
+
+        if (questions[currentQuestion]?.type === 'input') {
+          document.getElementsByClassName('goal-container')[currentQuestion].getElementsByTagName('input')[0].value = answers;
+        } else if (questions[currentQuestion]?.type === 'singleChoice') {
+          for (let y = 0; y < answers.length; y++) {
+            const answer = answers[y];
+            const foundAnswer = allAnswersOfAllQuestions.filter(currAnswer => currAnswer.q === currQuestion && currAnswer.a === answer);
+            if (foundAnswer.length > 0) foundAnswer[0].classList.add('selected');
+          }
+        }
+      }
+
+      // Show current question
+      const renderedQuestions = document.getElementsByClassName('question-holder');
+      if (questions[currentQuestion] !== null) renderedQuestions[currentQuestion].style.display = 'block';
+
+      // Add click event on all Next buttons
+      const nextBtns = document.getElementsByClassName('next-button');
+      for (let i = 0; i < nextBtns.length; i++) {
+        const nextBtn = nextBtns[i];
+
+        nextBtn.addEventListener('click', function () {
+          // if (currentQuestion === questions.length - 1) return;
+
+          const savedAnswers = JSON.parse(localStorage.getItem('savedAnswers'));
+
+          if (questions[currentQuestion].type === 'input') {
+            savedAnswers[currentQuestion] = document.getElementsByClassName('goal-container')[currentQuestion].getElementsByTagName('input')[0].value;
+          } else {
+            const selectedOptions = allAnswersOfAllQuestions.filter(option => option.q === currentQuestion).filter(option => option.classList.contains('selected'));
+            if (selectedOptions.length > 0) {
+              const seledtedAnswers = selectedOptions.map(selectedOption => selectedOption.a);
+              savedAnswers[selectedOptions[0].q] = seledtedAnswers;
+            }
+
+          }
+
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+          renderedQuestions[currentQuestion].style.display = 'none';
+          currentQuestion += 1;
+          localStorage.setItem('currentQuestion', currentQuestion)
+          if (questions[currentQuestion] !== null) renderedQuestions[currentQuestion].style.display = 'block';
+        });
+      }
+
+      // Add click event on Previous question button
+      const prevQuestionBtn = document.getElementsByClassName('back-arrow')[0];
+      prevQuestionBtn.addEventListener('click', () => {
+        if (currentQuestion > 0) {
+          if (questions[currentQuestion] !== null) {
+            renderedQuestions[currentQuestion].style.display = 'none';
+          } else {
+            screen2.style.display = 'none';
+          }
+
+          currentQuestion -= 1;
+          localStorage.setItem('currentQuestion', currentQuestion)
+          renderedQuestions[currentQuestion].style.display = 'block';
+        }
+      })
+
+      const answers = document.querySelectorAll('.goal-option');
+
+      const singleAnswerSelect = function () {
+        // Remove selected class from all answers of the current question
+        allAnswersOfAllQuestions.filter(answer => answer.q === currentQuestion).forEach(opt => opt.classList.remove('selected'));
+        // Add selected class to clicked option
+        this.classList.add('selected');
+      }
+
+      // Add click event on available Answers of a question
+      answers.forEach(option => {
+        option.addEventListener('click', singleAnswerSelect);
+      });
+
+      if (currentQuestion === 1) screen2.style.display = 'block';
+    });
+  </script>
+</head>
+
+<body>
+  <a href="#" class="back-arrow">←</a>
+
+  <div class="content-holder"></div>
+
+  <div class="screen-2">
+    <p>Millions of loved pets face health challenges due to eating food that isn't aligned with their needs.</p>
+    <br>
+    <p>Many commercially available pet foods are like junk foods for humans. Heavily processed, full of conservants,
+      preservatives, color, and flavor enhancers. These foods are optimized for profit, not for quality.</p>
+    <br>
+    <p>By choosing the real food, you're giving {dynamic.pet_name} happier and healthier life.</p>
+    <br>
+    <p><b>Thank you!</b></p>
+    <p><b>You are pawsome 🐾</b></p>
+  </div>
+
+  <div class="footer">
+    <span>By choosing to type your pet name and continuing, you agree to our </span>
+    <a href="">Terms of Service</a>
+    <span> | </span>
+    <a href="">Privacy Policy</a>
+    <span>. Please review before continuing.</span>
+  </div>
+</body>
+
+</html>

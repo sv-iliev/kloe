@@ -25,6 +25,7 @@
     }
 
     .back-arrow {
+      width: 2rem;
       position: absolute;
       left: 2rem;
       top: 2rem;
@@ -45,13 +46,14 @@
       font-size: 2.5rem;
       margin-bottom: 2rem;
       color: #000000;
-      text-align: center;
     }
 
     .question-holder {
       width: 100%;
       max-width: 600px;
       margin-bottom: 1rem;
+      text-align: center;
+      padding: 0 2rem;
       display: none;
     }
 
@@ -113,6 +115,19 @@
       transform: translateY(0);
     }
 
+    .footer {
+      display: block;
+    }
+
+    input.goal-option {
+      cursor: auto;
+    }
+
+    #step-2,
+    #step-4 {
+      text-align: left;
+    }
+
     @media (max-width: 480px) {
       h1 {
         font-size: 1.8rem;
@@ -136,153 +151,257 @@
   </style>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Get/create currentQuestion from/in localStorage
-      let currentQuestion = localStorage.getItem('currentQuestion');
-      if (currentQuestion === null) {
-        localStorage.setItem('currentQuestion', 0);
-        currentQuestion = 0;
-      } else {
-        currentQuestion = Number(currentQuestion);
+    const pet_name = 'pet_name';
+    const mealplan_goal = 'mealplan_goal';
+    const species = 'species';
+
+    function onMultiSelectClick(el) {
+      el.classList.toggle("selected");
+    }
+
+    function clearAllSelected(items) {
+      for (let i = 0; i < items.length; i++) {
+        items[i].classList.remove('selected');
       }
+    }
 
-      // Get/create savedAnswers from/in localStorage
-      let savedAnswers = localStorage.getItem('savedAnswers');
-      if (savedAnswers === null) {
-        localStorage.setItem('savedAnswers', JSON.stringify({}));
-        savedAnswers = {};
-      } else {
-        savedAnswers = JSON.parse(savedAnswers);
-      }
-
-      const body = document.getElementsByTagName('body')[0];
-      const questions = [
-        {
-          header: 'header 1',
-          options: [
-            'options 1',
-            'options 2',
-            'options 3',
-          ]
-        },
-        {
-          header: 'header 2',
-          options: [
-            'options 4',
-            'options 5',
-            'options 6',
-          ]
-        },
-        {
-          header: 'header 3',
-          options: [
-            'options 7',
-            'options 8',
-            'options 9',
-          ]
-        },
-      ]
-
-      // Create and add to "body" all questions
-      questions.forEach((question, qIndex) => {
-        const divQuestionHolder = document.createElement('div');
-        divQuestionHolder.className = 'question-holder';
-        const h1 = document.createElement('h1');
-        h1.textContent = question.header;
-        divQuestionHolder.appendChild(h1)
-
-        const divGoalContainer = document.createElement('div');
-        divGoalContainer.className = 'goal-container';
-
-        question.options.forEach((option, aIndex) => {
-          const divGoalOption = document.createElement('div');
-          divGoalOption.className = 'goal-option';
-          divGoalOption.q = qIndex;
-          divGoalOption.a = aIndex;
-          divGoalOption.textContent = option;
-          divGoalContainer.appendChild(divGoalOption)
-        });
-
-        const nextBtn = document.createElement('button');
-        nextBtn.className = 'next-button';
-        nextBtn.textContent = 'Next';
-
-        divGoalContainer.appendChild(nextBtn)
-        divQuestionHolder.appendChild(divGoalContainer)
-        body.appendChild(divQuestionHolder);
+    function makeStrFromArr(options) {
+      let str = '';
+      options.forEach((option, idx) => {
+        str += option
+        if (idx === options.length - 1) return;
+        idx < options.length - 2 ? str += ', ' : str += ' and '
       });
 
-      const allAnswersOfAllQuestions = Array.from(document.getElementsByClassName('goal-option'));
+      return str;
+    }
 
-      // pre-select answers from savedAnswers
-      for (let i = 0; i < Object.keys(savedAnswers).length; i++) {
-        const currQuestion = Number(Object.keys(savedAnswers)[i]);
+    document.addEventListener('DOMContentLoaded', function () {
+      //#region Get/create currentStep from/in localStorage
+      let currentStep = localStorage.getItem('currentStep');
+      if (currentStep === null) {
+        currentStep = 1;
+        localStorage.setItem('currentStep', currentStep);
+      } else {
+        currentStep = Number(currentStep);
+      }
 
-        const answers = savedAnswers[currQuestion];
-        for (let y = 0; y < answers.length; y++) {
-          const answer = answers[y];
-          const foundAnswer = allAnswersOfAllQuestions.filter(currAnswer => currAnswer.q === currQuestion && currAnswer.a === answer);
-          if (foundAnswer.length > 0) foundAnswer[0].classList.add('selected');
+      document.getElementById(`step-${currentStep}`).style.display = 'block';
+      //#endregion
+
+      //#region Get/create savedAnswers from/in localStorage
+      let savedAnswers = JSON.parse(localStorage.getItem('savedAnswers'));
+      if (savedAnswers === null) {
+        savedAnswers = {};
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+      } else {
+        if (savedAnswers?.pet_name) {
+          document.getElementById('step-1').getElementsByTagName('input')[0].value = savedAnswers.pet_name;
+
+          const pet_name_items = document.getElementsByClassName(pet_name);
+          for (let i = 0; i < pet_name_items.length; i++) pet_name_items[i].textContent = savedAnswers.pet_name
+        }
+
+        if (savedAnswers?.mealplan_goal) {
+          savedAnswers.mealplan_goal.forEach(meal => {
+            const foundBtn = Array.from(document.getElementById('step-3').getElementsByClassName('goal-option')).filter(btn => btn.textContent === meal)
+            foundBtn[0].classList.add('selected');
+          });
+
+          const mealplan_goal_items = document.getElementsByClassName(mealplan_goal);
+          for (let i = 0; i < mealplan_goal_items.length; i++) mealplan_goal_items[i].textContent = makeStrFromArr(savedAnswers.mealplan_goal);
+        }
+
+        if (savedAnswers?.species) {
+          const foundBtn = Array.from(document.getElementById('step-5').getElementsByClassName('goal-option')).filter(btn => btn.textContent === savedAnswers.species)
+          foundBtn[0].classList.add('selected');
         }
       }
+      //#endregion
 
-      // Show current question
-      const renderedQuestions = document.getElementsByClassName('question-holder');
-      renderedQuestions[currentQuestion].style.display = 'block';
-
-      // Add click event on all Next buttons
-      const nextBtns = document.getElementsByClassName('next-button');
-
-      for (let i = 0; i < nextBtns.length; i++) {
-        const nextBtn = nextBtns[i];
-
-        nextBtn.addEventListener('click', () => {
-          if (currentQuestion === questions.length - 1) return;
-
-          const selectedOptions = allAnswersOfAllQuestions.filter(option => option.q === currentQuestion).filter(option => option.classList.contains('selected'));
-          if (selectedOptions.length > 0) {
-            const seledtedAnswers = selectedOptions.map(selectedOption => selectedOption.a);
-            savedAnswers[selectedOptions[0].q] = seledtedAnswers;
-            localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-          }
-
-          renderedQuestions[currentQuestion].style.display = 'none';
-          currentQuestion += 1;
-          localStorage.setItem('currentQuestion', currentQuestion)
-          renderedQuestions[currentQuestion].style.display = 'block';
-        });
-      }
-
-      // Add click event on Previous question button
+      //#region Add click event on Previous question button
       const prevQuestionBtn = document.getElementsByClassName('back-arrow')[0];
       prevQuestionBtn.addEventListener('click', () => {
-        if (currentQuestion > 0) {
-          renderedQuestions[currentQuestion].style.display = 'none';
-          currentQuestion -= 1;
-          localStorage.setItem('currentQuestion', currentQuestion)
-          renderedQuestions[currentQuestion].style.display = 'block';
+        if (currentStep > 1) {
+          document.getElementById(`step-${currentStep}`).style.display = 'none';
+          currentStep -= 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
       })
+      //#endregion
 
-      const answers = document.querySelectorAll('.goal-option');
+      //#region step-1
+      const step1 = document.getElementById('step-1');
+      const step1inp = step1.getElementsByTagName('input')[0];
 
-      const singleAnswerSelect = function () {
-        // Remove selected class from all answers of the current question
-        allAnswersOfAllQuestions.filter(answer => answer.q === currentQuestion).forEach(opt => opt.classList.remove('selected'));
-        // Add selected class to clicked option
-        this.classList.add('selected');
+      step1inp.name = pet_name;
+
+      step1inp.addEventListener('input', function () {
+        if (this.value.length > 30) return;
+        this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+      })
+
+      step1.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step1inp.value.length > 0) {
+          const value = step1inp.value;
+          savedAnswers[pet_name] = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          const pet_name_items = document.getElementsByClassName(pet_name);
+
+          for (let i = 0; i < pet_name_items.length; i++) pet_name_items[i].textContent = value
+
+          step1.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+      })
+      //#endregion
+
+      //#region step-2
+      const step2 = document.getElementById('step-2');
+      step2.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        step2.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+      })
+      //#endregion
+
+      //#region step-3
+      const step3 = document.getElementById('step-3');
+      step3.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const selectedOptions = Array.from(step3.getElementsByClassName('goal-option'))
+          .filter(btn => btn.classList.contains('selected'))
+          .map(option => option.textContent);
+
+        if (selectedOptions.length === 0) return;
+
+        const mealplan_goal_items = document.getElementsByClassName(mealplan_goal);
+        for (let i = 0; i < mealplan_goal_items.length; i++) mealplan_goal_items[i].textContent = makeStrFromArr(selectedOptions);
+
+        savedAnswers[mealplan_goal] = selectedOptions;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+        step3.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+      })
+      //#endregion
+
+      //#region step-4
+      const step4 = document.getElementById('step-4');
+      step4.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        step4.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+      })
+      //#endregion
+
+      //#region step-5
+      const step5singleChoiceBtns = document.getElementById('step-5').getElementsByTagName('button');
+      for (let i = 0; i < step5singleChoiceBtns.length; i++) {
+        step5singleChoiceBtns[i].addEventListener('click', function () {
+          savedAnswers[species] = this.textContent;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step5singleChoiceBtns)
+          this.classList.add('selected')
+
+          document.getElementById('step-5').style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        })
       }
+      //#endregion
 
-      // Add click event on available Answers of a question
-      answers.forEach(option => {
-        option.addEventListener('click', singleAnswerSelect);
-      });
     });
   </script>
 </head>
 
 <body>
   <a href="#" class="back-arrow">←</a>
+
+  <div id="step-1" class="question-holder" name="pet_name">
+    <h1>What is the name of your pet?</h1>
+    <div class="goal-container">
+      <input class="goal-option" type="text" placeholder="example: Kloe" maxlength="30">
+    </div>
+    <button class="next-button">Next</button>
+  </div>
+
+  <div id="step-2" class="question-holder" name="thank_you_pawsome">
+    <p>Millions of loved pets face health challenges due to eating food that isn't aligned with their needs.</p>
+    <br>
+    <p>Many commercially available pet foods are like junk foods for humans. Heavily processed, full of conservants,
+      preservatives, color, and flavor enhancers. These foods are optimized for profit, not for quality.</p>
+    <br>
+    <div>
+      <span>By choosing the real food, you're giving </span>
+      <b class="pet_name"></b>
+      <span> happier and healthier life.</span>
+    </div>
+    <br>
+    <p><b>Thank you!</b></p>
+    <p><b>You are pawsome 🐾</b></p>
+    <button class="next-button">Next</button>
+  </div>
+
+  <div id="step-3" class="question-holder" name="mealplan_goal">
+    <h1>What do you want to achieve with the meal plan for <span class="pet_name"></span>?</h1>
+    <div class="goal-container">
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to gain weight</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to lose weight</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to get support with health challenges</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to get skin and coat issues resolved</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to get help with food allergy and/or
+        intolerances</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to balance better food</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to have long-term health</button>
+    </div>
+    <button class="next-button">Next</button>
+  </div>
+
+  <div id="step-4" class="question-holder" name="the_solution_is_here">
+    <p><b>The solution is here!</b></p>
+    <br>
+    <p>For owners who want their pet <b class="mealplan_goal"></b> often benefit from a
+      hyper-personalised meal plan.</p>
+    <br>
+    <p>With a hyper-personalized meal plan, every single ingredient is carefully selected and portioned to match
+      <b class="pet_name"></b> needs.
+    </p>
+    <br>
+    <p>Whether your <b class="pet_name"></b> has allergies, health challenges, or is just a peaky eater - we can build a
+      meal
+      plan that actually helps.</p>
+    <button class="next-button">Next</button>
+  </div>
+
+  <div id="step-5" class="question-holder" name="species">
+    <h1><span class="pet_name"></span> is a</h1>
+    <div class="goal-container">
+      <button class="goal-option">ferret</button>
+      <button class="goal-option">cat</button>
+      <button class="goal-option">dog</button>
+    </div>
+  </div>
+
+  <div id="step-6" class="question-holder" name="species">
+    6
+  </div>
+
+  <div class="footer">
+    <span>By choosing to type your pet name and continuing, you agree to our </span>
+    <a href="https://kloe.pet/terms-of-service/" target="_blank">Terms of Service</a>
+    <span> | </span>
+    <a href="https://kloe.pet/privacy/" target="_blank">Privacy Policy</a>
+    <span>. Please review before continuing.</span>
+  </div>
 </body>
 
 </html>
