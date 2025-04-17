@@ -92,8 +92,8 @@
     }
 
     .next-button {
-      width: 40%;
-      padding: 1.2rem;
+      width: fit-content;
+      padding: 1.2rem 3.4rem;
       margin-top: 2rem;
       background-color: #ffcb00;
       border: 2px solid #000000;
@@ -181,6 +181,9 @@
     const female_castration = 'female_castration';
     const male_castration = 'male_castration';
     const due_date = 'due_date';
+    const ferret_age = 'ferret_age';
+    const cat_age = 'cat_age';
+    const dog_age = 'dog_age';
 
     //#region Delete localStorage after 48 hours
     const oneSecond = 1000;
@@ -298,6 +301,34 @@
           });
         }
 
+        if (savedAnswers?.ferret_age) {
+          const btns = Array.from(document.getElementById('step-13').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.ferret_age) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.cat_age) {
+          const btns = Array.from(document.getElementById('step-14').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.cat_age) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.dog_age) {
+          const btns = Array.from(document.getElementById('step-15').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.dog_age) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+
 
 
 
@@ -310,13 +341,35 @@
         if (currentStep > 1) {
           document.getElementById(`step-${currentStep}`).style.display = 'none';
 
-          if (
-            (currentStep === 7 && savedAnswers[species] === 'ferret') ||
-            (currentStep === 8 && savedAnswers[species] !== 'ferret') ||
-            (currentStep === 10 && savedAnswers[gender] === 'a gentleman') ||
-            (currentStep === 11 && savedAnswers[gender] === 'a lady')
-          ) {
-            currentStep -= 1;
+          if (currentStep === 7 ||
+            currentStep === 8 ||
+            currentStep === 10 ||
+            currentStep === 11
+          ) currentStep -= 1;
+
+          if (currentStep === 12) {
+            currentStep -= 2;
+          }
+
+          if (currentStep === 13) {
+            if (savedAnswers?.gender === 'a gentleman') currentStep -= 2;
+            if ((savedAnswers?.female_castration === 'intact' || savedAnswers?.female_castration === 'fixed' || savedAnswers?.female_castration === 'chemically castrated')) currentStep -= 3;
+            if (savedAnswers?.female_castration === 'pregnant') currentStep -= 1;
+            if (savedAnswers?.female_castration === 'nursing') currentStep -= 2;
+          }
+
+          if (currentStep === 14) {
+            if (savedAnswers?.gender === "a gentleman") currentStep -= 3;
+            if (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated") currentStep -= 4;
+            if (savedAnswers?.female_castration === 'pregnant') currentStep -= 2;
+            if (savedAnswers?.female_castration === 'nursing') currentStep -= 1;
+          }
+
+          if (currentStep === 15) {
+            if (savedAnswers?.gender === "a gentleman") currentStep -= 4;
+            if (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated") currentStep -= 5;
+            if (savedAnswers?.female_castration === 'pregnant') currentStep -= 3;
+            if (savedAnswers?.female_castration === 'nursing') currentStep -= 2;
           }
 
           currentStep -= 1;
@@ -426,6 +479,7 @@
           localStorage.setItem('currentStep', currentStep)
 
           document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
         })
       }
       //#endregion
@@ -488,6 +542,7 @@
           if (textContent === 'a gentleman') currentStep += 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
         })
       }
       //#endregion
@@ -506,14 +561,19 @@
           this.classList.add('selected')
 
           step9.style.display = 'none';
-          currentStep += 2;
+          if (savedAnswers?.species === 'cat' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) currentStep += 5;
+          if (savedAnswers?.species === 'dog' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) currentStep += 6;
+          if (savedAnswers?.species === 'ferret' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) currentStep += 4;
+          if (savedAnswers?.female_castration === "pregnant") currentStep += 2;
+          if (savedAnswers?.female_castration === "nursing") currentStep += 3;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
         })
       }
       //#endregion
 
-      //#region step-9
+      //#region step-10
       const step10 = document.getElementById('step-10');
       const step10singleChoiceBtns = step10.getElementsByTagName('button');
 
@@ -527,9 +587,104 @@
           this.classList.add('selected')
 
           step10.style.display = 'none';
-          currentStep += 1;
+          if (savedAnswers?.species === 'ferret') currentStep += 3;
+          if (savedAnswers?.species === 'cat') currentStep += 4;
+          if (savedAnswers?.species === 'dog') currentStep += 5;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-11
+      const step11 = document.getElementById('step-11');
+      step11.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        step11.style.display = 'none';
+        if (savedAnswers?.species === "ferret") currentStep += 2;
+        if (savedAnswers?.species === "cat") currentStep += 3;
+        if (savedAnswers?.species === "dog") currentStep += 4;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-12
+      const step12 = document.getElementById('step-12');
+      step12.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        step12.style.display = 'none';
+        if (savedAnswers?.species === "ferret") currentStep += 1;
+        if (savedAnswers?.species === "cat") currentStep += 2;
+        if (savedAnswers?.species === "dog") currentStep += 3;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-13
+      const step13 = document.getElementById('step-13');
+      const step13singleChoiceBtns = step13.getElementsByTagName('button');
+
+      for (let i = 0; i < step13singleChoiceBtns.length; i++) {
+        step13singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers[ferret_age] = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step13singleChoiceBtns)
+          this.classList.add('selected')
+
+          // step13.style.display = 'none';
+          // currentStep += 1;
+          // localStorage.setItem('currentStep', currentStep)
+          // document.getElementById(`step-${currentStep}`).style.display = 'block';
+          // footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-14
+      const step14 = document.getElementById('step-14');
+      const step14singleChoiceBtns = step14.getElementsByTagName('button');
+
+      for (let i = 0; i < step14singleChoiceBtns.length; i++) {
+        step14singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers[cat_age] = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step14singleChoiceBtns)
+          this.classList.add('selected')
+
+          // step14.style.display = 'none';
+          // currentStep += 1;
+          // localStorage.setItem('currentStep', currentStep)
+          // document.getElementById(`step-${currentStep}`).style.display = 'block';
+          // footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-15
+      const step15 = document.getElementById('step-15');
+      const step15singleChoiceBtns = step15.getElementsByTagName('button');
+
+      for (let i = 0; i < step15singleChoiceBtns.length; i++) {
+        step15singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers[dog_age] = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step15singleChoiceBtns)
+          this.classList.add('selected')
+
+          // step15.style.display = 'none';
+          // currentStep += 1;
+          // localStorage.setItem('currentStep', currentStep)
+          // document.getElementById(`step-${currentStep}`).style.display = 'block';
+          // footerVisibility();
         })
       }
       //#endregion
@@ -681,8 +836,57 @@
     </div>
   </div>
 
-  <div id="step-11" class="question-holder" name="due_date ">
-    <h1>11</h1>
+  <div id="step-11" class="question-holder" name="due_date">
+    <h1>Aww! Congrats! When is the due date?</h1>
+    <div class="goal-container">
+      <input class="goal-option" type="text" maxlength="100">
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-12" class="question-holder" name="numer_of_babies">
+    <h1>How many babies has she?</h1>
+    <div class="goal-container">
+      <input class="goal-option" type="text" maxlength="100">
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-13" class="question-holder" name="ferret_age">
+    <h1>How old is <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">baby (up to 5 months old)</button>
+      <button class="goal-option">shark (6 - 12 months old)</button>
+      <button class="goal-option">adult (1 - 5 years)</button>
+      <button class="goal-option">senior (6+ years)</button>
+    </div>
+  </div>
+
+  <div id="step-14" class="question-holder" name="cat_age">
+    <h1>How old is <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">kitty (up to 5 months old)</button>
+      <button class="goal-option">junior (6 - 24 months old)</button>
+      <button class="goal-option">adult (3 - 6 years old)</button>
+      <button class="goal-option">mature (7 - 10 years old)</button>
+      <button class="goal-option">senior (11 - 14 years old)</button>
+      <button class="goal-option">super senior (15+ years old)</button>
+    </div>
+  </div>
+
+  <div id="step-15" class="question-holder" name="dog_age">
+    <h1>How old is <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">puppy (up to 5 months old)</button>
+      <button class="goal-option">teen (6 - 24 months old)</button>
+      <button class="goal-option">adult (2 - 6 years old)</button>
+      <button class="goal-option">senior (7 - 10 years old)</button>
+      <button class="goal-option">super senior (11+ years old)</button>
+    </div>
   </div>
 
 
