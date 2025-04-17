@@ -28,7 +28,7 @@
       width: 2rem;
       position: absolute;
       left: 2rem;
-      top: 2rem;
+      top: 0;
       font-size: 2rem;
       cursor: pointer;
       color: #000000;
@@ -83,18 +83,16 @@
       border-width: 3px;
     }
 
-    .goal-option:hover {
-      background-color: #ffe580;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
     .goal-option:active {
       transform: translateY(0);
     }
 
+    .next-button-holder {
+      text-align: center;
+    }
+
     .next-button {
-      width: 80%;
+      width: 40%;
       padding: 1.2rem;
       margin-top: 2rem;
       background-color: #ffcb00;
@@ -116,7 +114,7 @@
     }
 
     .footer {
-      display: block;
+      display: none;
     }
 
     input.goal-option {
@@ -126,11 +124,30 @@
     #step-2,
     #step-4 {
       text-align: left;
+      font-size: 1.5rem;
     }
 
     #step-5 img {
       width: 100px;
       height: 100px;
+    }
+
+    .logo-holder {
+      width: 100%;
+      height: 3rem;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 481px) {
+      .goal-option:hover {
+        background-color: #ffe580;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
     }
 
     @media (max-width: 480px) {
@@ -165,7 +182,20 @@
     const male_castration = 'male_castration';
     const due_date = 'due_date';
 
-
+    //#region Delete localStorage after 48 hours
+    const oneSecond = 1000;
+    const now = new Date().getTime();
+    const setupTime = localStorage.getItem('setupTime');
+    if (setupTime == null) {
+      localStorage.setItem('setupTime', now)
+    } else {
+      if ((now - setupTime) > oneSecond * 60 * 60 * 48) {
+        // ZAK razkomentirai pri krai na DEV
+        // localStorage.clear()
+        // localStorage.setItem('setupTime', now);
+      }
+    }
+    //#endregion
 
     function onMultiSelectClick(el) {
       el.classList.toggle("selected");
@@ -200,6 +230,10 @@
 
       document.getElementById(`step-${currentStep}`).style.display = 'block';
       //#endregion
+
+      const footer = document.getElementsByClassName('footer')[0];
+      const footerVisibility = () => { currentStep === 1 ? footer.style.display = 'block' : footer.style.display = 'none'; };
+      footerVisibility();
 
       //#region Get/create savedAnswers from/in localStorage
       let savedAnswers = JSON.parse(localStorage.getItem('savedAnswers'));
@@ -289,6 +323,8 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
+
+        footerVisibility();
       })
       //#endregion
 
@@ -300,7 +336,7 @@
 
       step1inp.addEventListener('input', function () {
         if (this.value.length > 30) return;
-        this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+        this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
       })
 
       step1.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -318,6 +354,8 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
+
+        footerVisibility();
       })
       //#endregion
 
@@ -328,6 +366,8 @@
         currentStep += 1;
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
       })
       //#endregion
 
@@ -349,6 +389,8 @@
         currentStep += 1;
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
       })
       //#endregion
 
@@ -359,6 +401,8 @@
         currentStep += 1;
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
       })
       //#endregion
 
@@ -407,6 +451,8 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
+
+        footerVisibility();
       })
       //#endregion
 
@@ -418,6 +464,8 @@
         currentStep += 1;
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
       })
       //#endregion
 
@@ -491,14 +539,19 @@
 </head>
 
 <body>
-  <a href="#" class="back-arrow">←</a>
+  <div class="logo-holder">
+    <a href="#" class="back-arrow">←</a>
+    <h2>LOGO Here</h2>
+  </div>
 
   <div id="step-1" class="question-holder" name="pet_name">
     <h1>What is the name of your pet?</h1>
     <div class="goal-container">
       <input class="goal-option" type="text" placeholder="example: Kloe" maxlength="30">
     </div>
-    <button class="next-button">Next</button>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
   </div>
 
   <div id="step-2" class="question-holder" name="thank_you_pawsome">
@@ -515,7 +568,11 @@
     <br>
     <p><b>Thank you!</b></p>
     <p><b>You are pawsome 🐾</b></p>
-    <button class="next-button">Next</button>
+    <div class="next-button-holder">
+      <div class="next-button-holder">
+        <button class="next-button">Next</button>
+      </div>
+    </div>
   </div>
 
   <div id="step-3" class="question-holder" name="mealplan_goal">
@@ -530,7 +587,9 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">to balance better food</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to have long-term health</button>
     </div>
-    <button class="next-button">Next</button>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
   </div>
 
   <div id="step-4" class="question-holder" name="the_solution_is_here">
@@ -546,7 +605,9 @@
     <p>Whether your <b class="pet_name"></b> has allergies, health challenges, or is just a peaky eater - we can build a
       meal
       plan that actually helps.</p>
-    <button class="next-button">Next</button>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
   </div>
 
   <div id="step-5" class="question-holder" name="species">
@@ -578,14 +639,18 @@
     <div class="goal-container">
       <input class="goal-option" type="text" placeholder=" If there is no breed, type 'Mixed' ;) " maxlength="30">
     </div>
-    <button class="next-button">Next</button>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
   </div>
 
   <div id="step-7" class="question-holder" name="kiss_ferret">
     <p><b>Awww! Our favorite!</b></p>
     <br>
     <p>Kiss <b class="pet_name"></b>'s nose for us ❤️</p>
-    <button class="next-button">Next</button>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
   </div>
 
   <div id="step-8" class="question-holder" name="gender">
@@ -627,8 +692,8 @@
     <span>By choosing to type your pet name and continuing, you agree to our </span>
     <a href="https://kloe.pet/terms-of-service/" target="_blank">Terms of Service</a>
     <span> | </span>
-    <a href="https://kloe.pet/privacy/" target="_blank">Privacy Policy</a>
-    <span>. Please review before continuing.</span>
+    <a href="https://kloe.pet/privacy/" target="_blank">Privacy Policy.</a>
+    <span> Please review before continuing.</span>
   </div>
 </body>
 
