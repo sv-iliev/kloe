@@ -170,6 +170,30 @@
         font-size: 1.5rem;
       }
     }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+      gap: 1rem;
+    }
+
+    .toggle-button {
+      background-color: #ffcb00;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      color: #000000;
+    }
+
+    .toggle-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
   </style>
 
   <script>
@@ -184,6 +208,17 @@
     const ferret_age = 'ferret_age';
     const cat_age = 'cat_age';
     const dog_age = 'dog_age';
+    const housing = 'housing';
+    const ferret_activity = 'ferret_activity';
+    const cat_activity = 'cat_activity';
+    const dog_activity = 'dog_activity';
+    const ferret_body_condition = 'ferret_body_condition';
+    const cat_body_condition = 'cat_body_condition';
+    const dog_body_condition = 'dog_body_condition';
+    const current_weight = 'current_weight';
+    const health_condition = 'health_condition';
+    const health_condition_checkbox = 'health_condition_checkbox';
+
 
     //#region Delete localStorage after 48 hours
     const oneSecond = 1000;
@@ -219,6 +254,39 @@
       });
 
       return str;
+    }
+
+    function formatDateInput(input) {
+      // Remove any non-digit characters
+      let value = input.value.replace(/\D/g, '');
+
+      // Validate day (first 2 digits)
+      if (value.length >= 2) {
+        const day = parseInt(value.substring(0, 2));
+        if (day > 31) {
+          value = '31' + value.substring(2);
+        }
+      }
+
+      // Format the value as dd/mm/yy
+      if (value.length > 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+      }
+
+      // Validate month (next 2 digits)
+      if (value.length >= 5) {
+        const month = parseInt(value.substring(3, 5));
+        if (month > 12) {
+          value = value.substring(0, 3) + '12' + value.substring(5);
+        }
+      }
+
+      if (value.length > 5) {
+        value = value.substring(0, 5) + '/' + value.substring(5, 9);
+      }
+
+      // Update the input value
+      input.value = value;
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -328,7 +396,93 @@
           });
         }
 
+        if (savedAnswers?.housing) {
+          const btns = Array.from(document.getElementById('step-16').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.housing) {
+              btn.classList.add('selected');
+            }
+          });
+        }
 
+        if (savedAnswers?.ferret_activity) {
+          const btns = Array.from(document.getElementById('step-17').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.ferret_activity) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.cat_activity) {
+          const btns = Array.from(document.getElementById('step-18').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.cat_activity) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.dog_activity) {
+          const btns = Array.from(document.getElementById('step-19').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.dog_activity) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.ferret_body_condition) {
+          const btns = Array.from(document.getElementById('step-20').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.ferret_body_condition) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.cat_body_condition) {
+          const btns = Array.from(document.getElementById('step-21').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.cat_body_condition) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.dog_body_condition) {
+          const btns = Array.from(document.getElementById('step-22').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.dog_body_condition) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.current_weight) {
+          const { weight, type } = savedAnswers.current_weight;
+          const step23 = document.getElementById('step-23');
+          step23.getElementsByTagName('input')[0].value = weight;
+          step23.getElementsByClassName('toggle-button')[0].textContent = type;
+        }
+
+        if (savedAnswers?.health_condition) {
+          const btns = Array.from(document.getElementById('step-24').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.health_condition) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.health_condition_checkbox) {
+          const btns = Array.from(document.getElementById('step-26').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (savedAnswers.health_condition_checkbox.includes(btn.textContent)) {
+              btn.classList.add('selected');
+            }
+          });
+        }
 
 
 
@@ -372,6 +526,33 @@
             if (savedAnswers?.female_castration === 'nursing') currentStep -= 2;
           }
 
+          if (currentStep === 16) {
+            if (savedAnswers?.ferret_age) currentStep -= 2;
+            if (savedAnswers?.cat_age) currentStep -= 1;
+          }
+
+          if (currentStep === 18) {
+            currentStep -= 1;
+          }
+
+          if (currentStep === 19 || currentStep === 20 || currentStep === 21 || currentStep === 22) {
+            currentStep -= 2;
+          }
+
+          if (currentStep === 23) {
+            if (savedAnswers.species === 'cat') currentStep -= 1;
+            if (savedAnswers.species === 'dog') currentStep -= 2;
+          }
+
+          if (currentStep === 26) {
+            if (savedAnswers.health_condition === 'yes') currentStep -= 1;
+          }
+
+          if (currentStep === 29) {
+            if (savedAnswers.health_condition === 'no') currentStep -= 4;
+
+          }
+
           currentStep -= 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -395,7 +576,7 @@
       step1.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         if (step1inp.value.length > 0) {
           const value = step1inp.value;
-          savedAnswers[pet_name] = value;
+          savedAnswers.pet_name = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           const pet_name_items = document.getElementsByClassName(pet_name);
@@ -436,7 +617,7 @@
         const mealplan_goal_items = document.getElementsByClassName(mealplan_goal);
         for (let i = 0; i < mealplan_goal_items.length; i++) mealplan_goal_items[i].textContent = makeStrFromArr(selectedOptions);
 
-        savedAnswers[mealplan_goal] = selectedOptions;
+        savedAnswers.mealplan_goal = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
         step3.style.display = 'none';
         currentStep += 1;
@@ -466,7 +647,7 @@
       for (let i = 0; i < step5singleChoiceBtns.length; i++) {
         step5singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
-          savedAnswers[species] = selectedItem;
+          savedAnswers.species = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step5singleChoiceBtns)
@@ -497,7 +678,7 @@
         const value = step6inp.value;
 
         if (value.length > 0) {
-          savedAnswers[breed] = value;
+          savedAnswers.breed = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           step6.style.display = 'none';
@@ -512,7 +693,7 @@
 
       //#region step-7
       const step7 = document.getElementById('step-7');
-      step7.getElementsByClassName('pet_name')[0].textContent = savedAnswers[pet_name];
+      step7.getElementsByClassName('pet_name')[0].textContent = savedAnswers.pet_name;
       step7.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         step7.style.display = 'none';
         currentStep += 1;
@@ -531,7 +712,7 @@
         step8singleChoiceBtns[i].addEventListener('click', function () {
           const textContent = this.textContent.trim();
           const selectedItem = textContent;
-          savedAnswers[gender] = selectedItem;
+          savedAnswers.gender = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step8singleChoiceBtns)
@@ -554,7 +735,7 @@
       for (let i = 0; i < step9singleChoiceBtns.length; i++) {
         step9singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
-          savedAnswers[female_castration] = selectedItem;
+          savedAnswers.female_castration = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step9singleChoiceBtns)
@@ -580,7 +761,7 @@
       for (let i = 0; i < step10singleChoiceBtns.length; i++) {
         step10singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
-          savedAnswers[male_castration] = selectedItem;
+          savedAnswers.male_castration = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step10singleChoiceBtns)
@@ -599,7 +780,19 @@
 
       //#region step-11
       const step11 = document.getElementById('step-11');
+      const step11inp = step11.getElementsByTagName('input')[0];
+
+      step11inp.addEventListener('input', function () {
+        formatDateInput(this);
+      });
+
       step11.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const inpVal = step11inp.value;
+        const mmDDyyy = `${inpVal.substring(3, 5)}/${inpVal.substring(0, 2)}/${inpVal.substring(6)}`
+        if (inpVal.length !== 10 || isNaN(Date.parse(mmDDyyy))) return;
+
+        savedAnswers.due_date = inpVal;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
         step11.style.display = 'none';
         if (savedAnswers?.species === "ferret") currentStep += 2;
         if (savedAnswers?.species === "cat") currentStep += 3;
@@ -630,17 +823,17 @@
       for (let i = 0; i < step13singleChoiceBtns.length; i++) {
         step13singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
-          savedAnswers[ferret_age] = selectedItem;
+          savedAnswers.ferret_age = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step13singleChoiceBtns)
           this.classList.add('selected')
 
-          // step13.style.display = 'none';
-          // currentStep += 1;
-          // localStorage.setItem('currentStep', currentStep)
-          // document.getElementById(`step-${currentStep}`).style.display = 'block';
-          // footerVisibility();
+          step13.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
         })
       }
       //#endregion
@@ -652,17 +845,17 @@
       for (let i = 0; i < step14singleChoiceBtns.length; i++) {
         step14singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
-          savedAnswers[cat_age] = selectedItem;
+          savedAnswers.cat_age = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step14singleChoiceBtns)
           this.classList.add('selected')
 
-          // step14.style.display = 'none';
-          // currentStep += 1;
-          // localStorage.setItem('currentStep', currentStep)
-          // document.getElementById(`step-${currentStep}`).style.display = 'block';
-          // footerVisibility();
+          step14.style.display = 'none';
+          currentStep += 2;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
         })
       }
       //#endregion
@@ -674,21 +867,283 @@
       for (let i = 0; i < step15singleChoiceBtns.length; i++) {
         step15singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
-          savedAnswers[dog_age] = selectedItem;
+          savedAnswers.dog_age = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step15singleChoiceBtns)
           this.classList.add('selected')
 
-          // step15.style.display = 'none';
-          // currentStep += 1;
-          // localStorage.setItem('currentStep', currentStep)
-          // document.getElementById(`step-${currentStep}`).style.display = 'block';
-          // footerVisibility();
+          step15.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
         })
       }
       //#endregion
 
+      //#region step-16
+      const step16 = document.getElementById('step-16');
+      const step16singleChoiceBtns = step16.getElementsByTagName('button');
+
+      for (let i = 0; i < step16singleChoiceBtns.length; i++) {
+        step16singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.housing = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step16singleChoiceBtns)
+          this.classList.add('selected')
+
+          step16.style.display = 'none';
+          if (savedAnswers.species === 'ferret') currentStep += 1;
+          if (savedAnswers.species === 'cat') currentStep += 2;
+          if (savedAnswers.species === 'dog') currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-17
+      const step17 = document.getElementById('step-17');
+      const step17singleChoiceBtns = step17.getElementsByTagName('button');
+
+      for (let i = 0; i < step17singleChoiceBtns.length; i++) {
+        step17singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.ferret_activity = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step17singleChoiceBtns)
+          this.classList.add('selected')
+
+          step17.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-18
+      const step18 = document.getElementById('step-18');
+      const step18singleChoiceBtns = step18.getElementsByTagName('button');
+
+      for (let i = 0; i < step18singleChoiceBtns.length; i++) {
+        step18singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.cat_activity = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step18singleChoiceBtns)
+          this.classList.add('selected')
+
+          step18.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-19
+      const step19 = document.getElementById('step-19');
+      const step19singleChoiceBtns = step19.getElementsByTagName('button');
+
+      for (let i = 0; i < step19singleChoiceBtns.length; i++) {
+        step19singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.dog_activity = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step19singleChoiceBtns)
+          this.classList.add('selected')
+
+          step19.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-20
+      const step20 = document.getElementById('step-20');
+      const step20singleChoiceBtns = step20.getElementsByTagName('button');
+
+      for (let i = 0; i < step20singleChoiceBtns.length; i++) {
+        step20singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.ferret_body_condition = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step20singleChoiceBtns)
+          this.classList.add('selected')
+
+          step20.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-21
+      const step21 = document.getElementById('step-21');
+      const step21singleChoiceBtns = step21.getElementsByTagName('button');
+
+      for (let i = 0; i < step21singleChoiceBtns.length; i++) {
+        step21singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.cat_body_condition = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step21singleChoiceBtns)
+          this.classList.add('selected')
+
+          step21.style.display = 'none';
+          currentStep += 2;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-22
+      const step22 = document.getElementById('step-22');
+      const step22singleChoiceBtns = step22.getElementsByTagName('button');
+
+      for (let i = 0; i < step22singleChoiceBtns.length; i++) {
+        step22singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.dog_body_condition = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step22singleChoiceBtns)
+          this.classList.add('selected')
+
+          step22.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-23
+      const step23 = document.getElementById('step-23');
+      const step23inp = step23.getElementsByTagName('input')[0];
+      const weightToggle = document.getElementById('weight-toggle');
+      let isKg = true;
+
+      step23inp.name = current_weight;
+
+      weightToggle.addEventListener('click', function () {
+        isKg = !isKg;
+        this.textContent = isKg ? 'kg' : 'lbs';
+
+        // // Convert the current value
+        // const currentValue = parseFloat(step23inp.value);
+        // if (!isNaN(currentValue)) {
+        //   if (isKg) {
+        //     // Convert from lbs to kg
+        //     step23inp.value = (currentValue * 0.453592).toFixed(2);
+        //   } else {
+        //     // Convert from kg to lbs
+        //     step23inp.value = (currentValue * 2.20462).toFixed(2);
+        //   }
+        // }
+      });
+
+      step23inp.addEventListener('input', function () {
+        const value = parseFloat(this.value)
+        if (value > 999) this.value = 999;
+        if (value < 0) this.value = 0;
+      })
+
+      step23.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const weight = parseFloat(step23inp.value);
+        if (weight > 0) {
+          savedAnswers.current_weight = {
+            weight: weight,
+            type: isKg ? 'kg' : 'lbs',
+          }
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          step23.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-24
+      const step24 = document.getElementById('step-24');
+      const step24singleChoiceBtns = step24.getElementsByTagName('button');
+
+      for (let i = 0; i < step24singleChoiceBtns.length; i++) {
+        step24singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.health_condition = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step24singleChoiceBtns)
+          this.classList.add('selected')
+
+          step24.style.display = 'none';
+          currentStep += 1;
+          if (selectedItem === 'yes') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-25
+      const step25 = document.getElementById('step-25');
+      const step25singleChoiceBtns = step25.getElementsByTagName('button');
+
+      for (let i = 0; i < step25singleChoiceBtns.length; i++) {
+        step25singleChoiceBtns[i].addEventListener('click', function () {
+          step25.style.display = 'none';
+          currentStep += 4;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-26
+      const step26 = document.getElementById('step-26');
+      step26.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const selectedOptions = Array.from(step26.getElementsByClassName('goal-option'))
+          .filter(btn => btn.classList.contains('selected'))
+          .map(option => option.textContent);
+
+        if (selectedOptions.length === 0) return;
+
+        savedAnswers.health_condition_checkbox = selectedOptions;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+        step26.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
+      })
     });
   </script>
 </head>
@@ -839,7 +1294,7 @@
   <div id="step-11" class="question-holder" name="due_date">
     <h1>Aww! Congrats! When is the due date?</h1>
     <div class="goal-container">
-      <input class="goal-option" type="text" maxlength="100">
+      <input class="goal-option" type="text" placeholder="dd/mm/yyyy" maxlength="10">
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
@@ -887,6 +1342,137 @@
       <button class="goal-option">senior (7 - 10 years old)</button>
       <button class="goal-option">super senior (11+ years old)</button>
     </div>
+  </div>
+
+  <div id="step-16" class="question-holder" name="housing">
+    <h1>Where does <b class="pet_name"></b> sleep during the night?</h1>
+    <div class="goal-container">
+      <button class="goal-option">in house</button>
+      <button class="goal-option">outside</button>
+      <button class="goal-option">both</button>
+    </div>
+  </div>
+
+  <div id="step-17" class="question-holder" name="ferret_activity">
+    <h1>How active is <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">4+ hours of playing, exploring and doing ferret things</button>
+      <button class="goal-option">2-4 hours of playing, exploring and doing ferret things</button>
+      <button class="goal-option">under 2 hours of playing, exploring and doing ferret things</button>
+      <button class="goal-option">prefers to sleep most of the time</button>
+    </div>
+  </div>
+
+  <div id="step-18" class="question-holder" name="cat_activity">
+    <h1>How active is <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">6+ hours of playing and doing cat things</button>
+      <button class="goal-option">4-6 hours of playing and doing cat things</button>
+      <button class="goal-option">under 4 hours of playing and doing cat things</button>
+      <button class="goal-option">prefers to sleep most of the time</button>
+    </div>
+  </div>
+
+  <div id="step-19" class="question-holder" name="dog_activity">
+    <h1>How active is <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">6+ hours of playing, walking and doing dog things</button>
+      <button class="goal-option">2-4 hours of playing, walking and doing dog things</button>
+      <button class="goal-option">under 2 hours of playing, walking and doing dog things</button>
+      <button class="goal-option">prefers to sleep most of the time</button>
+    </div>
+  </div>
+
+  <div id="step-20" class="question-holder" name="ferret_body_condition">
+    <h1>How do you assess the body condition of <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">emaciated (ribs, spine, hip bones are visible)</button>
+      <button class="goal-option">underweight (ribs, spine, hip bones are easily palpable and/or visible. Minimal fat
+        layer)</button>
+      <button class="goal-option">ideal (you can feel the ribs, spine and hip bone, but not seeing them. There is a
+        layer of fat distributed evenly around the body. The body has a slightly pear-like appearance)</button>
+      <button class="goal-option">overweight (there is a thick layer of fat. Ribs and spine are hard to feel. There is a
+        fat around the neck. The body shape is like a pear)</button>
+    </div>
+  </div>
+
+  <div id="step-21" class="question-holder" name="cat_body_condition">
+    <h1>Which picture is closest to <b class="pet_name"></b> appearance?</h1>
+    <div class="goal-container">
+      <button class="goal-option">emaciated</button>
+      <button class="goal-option">underweight</button>
+      <button class="goal-option">ideal</button>
+      <button class="goal-option">overweight</button>
+    </div>
+  </div>
+
+  <div id="step-22" class="question-holder" name="dog_body_condition">
+    <h1>Which picture is closest to <b class="pet_name"></b> appearance?</h1>
+    <div class="goal-container">
+      <button class="goal-option">emaciated</button>
+      <button class="goal-option">underweight</button>
+      <button class="goal-option">ideal</button>
+      <button class="goal-option">overweight</button>
+    </div>
+  </div>
+
+  <div id="step-23" class="question-holder" name="current_weight">
+    <h1>What is <b class="pet_name"></b>'s current weight?</h1>
+    <div class="goal-container">
+      <input class="goal-option" type="number" min="0" max="999" value="0" step=".01">
+      <div class="toggle-container">
+        <button class="toggle-button" id="weight-toggle">kg</button>
+      </div>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-24" class="question-holder" name="health_condition">
+    <h1>Does <b class="pet_name"></b> have a diagnosed health condition?</h1>
+    <div class="goal-container">
+      <button class="goal-option">yes</button>
+      <button class="goal-option">no</button>
+    </div>
+  </div>
+
+  <div id="step-25" class="question-holder" name="no_health_conditions">
+    <h1>That’s amazing!</h1>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-26" class="question-holder" name="health_condition_checkbox">
+    <h1>What is the health condition? (choose all that apply)</h1>
+    <div class="goal-container">
+      <button onclick="onMultiSelectClick(this)" class="goal-option">kidney disease</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">diabetes</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pacreatitis</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">liver disease</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">gastrointestinal issues</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">skin issues</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">cancer</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">insulinoma</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">adrenal disease</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-27" class="question-holder" name="healthcondition_text">
+    <h1>27</h1>
+  </div>
+
+  <div id="step-28" class="question-holder" name="bloodwork_fileupload">
+    <h1>28</h1>
+  </div>
+
+  <div id="step-29" class="question-holder" name="pills">
+    <h1>29</h1>
   </div>
 
 
