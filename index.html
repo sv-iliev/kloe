@@ -142,35 +142,6 @@
       margin-bottom: 3rem;
     }
 
-    @media (min-width: 481px) {
-      .goal-option:hover {
-        background-color: #ffe580;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .goal-option {
-        font-size: 1rem;
-        padding: 1.2rem;
-      }
-
-      body {
-        padding: 1rem;
-      }
-
-      .back-arrow {
-        left: 1rem;
-        top: 1rem;
-        font-size: 1.5rem;
-      }
-    }
-
     .toggle-container {
       display: flex;
       align-items: center;
@@ -194,9 +165,105 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+
+    .file-upload-container {
+      position: relative;
+      width: 100%;
+      padding: 1.5rem;
+      border: 2px dashed #000000;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: #fff5cc;
+    }
+
+    .file-upload-container:hover {
+      background-color: #ffe680;
+    }
+
+    .file-upload-container input[type="file"] {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+
+    .file-list {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background-color: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #000000;
+    }
+
+    .file-item span {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .remove-file {
+      background: none;
+      border: none;
+      color: #ff0000;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 0.5rem;
+    }
+
+    .remove-file:hover {
+      color: #cc0000;
+    }
+
+    .danger {
+      color: red;
+    }
+
+  @media (min-width: 481px) {
+    .goal-option:hover {
+      background-color: #ffe580;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    .goal-option {
+      font-size: 1rem;
+      padding: 1.2rem;
+    }
+
+    body {
+      padding: 1rem;
+    }
+
+    .back-arrow {
+      left: 1rem;
+      top: 1rem;
+      font-size: 1.5rem;
+    }
+  }
   </style>
 
   <script>
+    //#region variables
     const pet_name = 'pet_name';
     const mealplan_goal = 'mealplan_goal';
     const species = 'species';
@@ -218,7 +285,27 @@
     const current_weight = 'current_weight';
     const health_condition = 'health_condition';
     const health_condition_checkbox = 'health_condition_checkbox';
-
+    const health_condition_text = 'health_condition_text';
+    const bloodwork_file_upload = 'bloodwork_file_upload';
+    const pills = 'pills';
+    const pills_text = 'pills_text';
+    const health_issues_checkbox_1 = 'health_issues_checkbox_1';
+    const health_issues_text = 'health_issues_text';
+    const behavior_change_checkbox = 'behavior_change_checkbox';
+    const behavior_change_text = 'behavior_change_text';
+    const food_allergies = 'food_allergies';
+    const allergies_text = 'allergies_text';
+    const allergy_symptoms = 'allergy_symptoms';
+    const symptomes_text = 'symptomes_text';
+    const contact_info = 'contact_info';
+    const peaky_eater = 'peaky_eater';
+    const current_food = 'current_food';
+    const food_brand = 'food_brand';
+    const homemade_food = 'homemade_food';
+    const food_likes = 'food_likes';
+    const additional_likes = 'additional_likes';
+    const doesnt_likes = 'doesnt_likes';
+    //#endregion
 
     //#region Delete localStorage after 48 hours
     const oneSecond = 1000;
@@ -235,6 +322,7 @@
     }
     //#endregion
 
+    //#region outside functions
     function onMultiSelectClick(el) {
       el.classList.toggle("selected");
     }
@@ -288,6 +376,7 @@
       // Update the input value
       input.value = value;
     }
+    //#endregion 
 
     document.addEventListener('DOMContentLoaded', function () {
       //#region Get/create currentStep from/in localStorage
@@ -312,6 +401,7 @@
         savedAnswers = {};
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
       } else {
+        // INPUT example
         if (savedAnswers?.pet_name) {
           document.getElementById('step-1').getElementsByTagName('input')[0].value = savedAnswers.pet_name;
 
@@ -466,6 +556,7 @@
           step23.getElementsByClassName('toggle-button')[0].textContent = type;
         }
 
+        // SINGLECHOICE example
         if (savedAnswers?.health_condition) {
           const btns = Array.from(document.getElementById('step-24').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
@@ -475,6 +566,7 @@
           });
         }
 
+        // MULTICHOICE example
         if (savedAnswers?.health_condition_checkbox) {
           const btns = Array.from(document.getElementById('step-26').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
@@ -484,8 +576,157 @@
           });
         }
 
+        // TEXTAREA example
+        if (savedAnswers?.health_condition_text) {
+          document.getElementById('step-27').getElementsByTagName('textarea')[0].value = savedAnswers.health_condition_text;
+        }
+
+        // UPLOAD FILE example
+        if (savedAnswers?.bloodwork_file_upload) {
+          const fileList = document.getElementById('step-28').querySelector('.file-list');
+          savedAnswers.bloodwork_file_upload.forEach(file => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+
+            const fileName = document.createElement('span');
+            fileName.textContent = file;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-file';
+            removeBtn.textContent = '×';
+            removeBtn.onclick = () => {
+              fileItem.remove();
+              updateFileList();
+            };
+
+            fileItem.appendChild(fileName);
+            fileItem.appendChild(removeBtn);
+            fileList.appendChild(fileItem);
+          });
+        }
+
+        if (savedAnswers?.pills) {
+          const btns = Array.from(document.getElementById('step-29').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.pills) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.pills_text) {
+          document.getElementById('step-30').getElementsByTagName('textarea')[0].value = savedAnswers.pills_text;
+        }
+
+        if (savedAnswers?.health_issues_checkbox_1) {
+          const btns = Array.from(document.getElementById('step-31').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (savedAnswers.health_issues_checkbox_1.includes(btn.textContent)) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.health_issues_text) {
+          document.getElementById('step-32').getElementsByTagName('textarea')[0].value = savedAnswers.health_issues_text;
+        }
+
+        if (savedAnswers?.behavior_change_checkbox) {
+          const btns = Array.from(document.getElementById('step-33').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (savedAnswers.behavior_change_checkbox.includes(btn.textContent)) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.behavior_change_text) {
+          document.getElementById('step-34').getElementsByTagName('textarea')[0].value = savedAnswers.behavior_change_text;
+        }
+
+        if (savedAnswers?.food_allergies) {
+          const btns = Array.from(document.getElementById('step-35').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.food_allergies) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.allergies_text) {
+          document.getElementById('step-36').getElementsByTagName('textarea')[0].value = savedAnswers.allergies_text;
+        }
+
+        if (savedAnswers?.allergy_symptoms) {
+          const btns = Array.from(document.getElementById('step-37').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (savedAnswers.allergy_symptoms.includes(btn.textContent)) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.symptomes_text) {
+          document.getElementById('step-38').getElementsByTagName('textarea')[0].value = savedAnswers.symptomes_text;
+        }
+
+        if (savedAnswers?.contact_info) {
+          const step39 = document.getElementById('step-39');
+          step39.getElementsByTagName('input')[0].value = savedAnswers.contact_info.email;
+          step39.getElementsByTagName('input')[1].value = savedAnswers.contact_info.name;
+        }
+
+        if (savedAnswers?.peaky_eater) {
+          const btns = Array.from(document.getElementById('step-40').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.peaky_eater) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.current_food) {
+          const btns = Array.from(document.getElementById('step-41').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.current_food) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.food_brand) {
+          document.getElementById('step-42').getElementsByTagName('textarea')[0].value = savedAnswers.food_brand;
+        }
+
+        if (savedAnswers?.homemade_food) {
+          document.getElementById('step-43').getElementsByTagName('textarea')[0].value = savedAnswers.homemade_food;
+        }
+
+        if (savedAnswers?.food_likes) {
+          const btns = Array.from(document.getElementById('step-44').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (savedAnswers.food_likes.includes(btn.textContent)) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.additional_likes) {
+          document.getElementById('step-45').getElementsByTagName('textarea')[0].value = savedAnswers.additional_likes;
+        }
+
+        if (savedAnswers?.doesnt_likes) {
+          const btns = Array.from(document.getElementById('step-46').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (savedAnswers.doesnt_likes.includes(btn.textContent)) {
+              btn.classList.add('selected');
+            }
+          });
+        }
 
 
+
+        
       }
       //#endregion
 
@@ -553,6 +794,12 @@
 
           }
 
+          if (currentStep === 43) {
+            if (savedAnswers.current_food === 'homemade food') currentStep -= 1;
+
+          }
+
+          
           currentStep -= 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -562,7 +809,7 @@
       })
       //#endregion
 
-      //#region step-1
+      //#region step-1 INPUT example
       const step1 = document.getElementById('step-1');
       const step1inp = step1.getElementsByTagName('input')[0];
 
@@ -1088,7 +1335,7 @@
       })
       //#endregion
 
-      //#region step-24
+      //#region step-24 SINGLECHOICE example
       const step24 = document.getElementById('step-24');
       const step24singleChoiceBtns = step24.getElementsByTagName('button');
 
@@ -1126,7 +1373,7 @@
       }
       //#endregion
 
-      //#region step-26
+      //#region step-26 MULTICHOICE example
       const step26 = document.getElementById('step-26');
       step26.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step26.getElementsByClassName('goal-option'))
@@ -1137,13 +1384,637 @@
 
         savedAnswers.health_condition_checkbox = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+        if (savedAnswers.health_condition === 'yes') currentStep += 1;
         step26.style.display = 'none';
-        currentStep += 1;
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
       })
+      //#endregion
+
+      //#region step-27 TEXTAREA example
+      const step27 = document.getElementById('step-27');
+      const step27inp = step27.getElementsByTagName('textarea')[0];
+
+      step27inp.name = health_condition_text;
+
+      step27inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step27.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step27inp.value.length > 0) {
+          const value = step27inp.value;
+          savedAnswers.health_condition_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          if (savedAnswers.health_condition === 'yes') currentStep += 1;
+          step27.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-28 FILE UPLOAD example
+      const step28 = document.getElementById('step-28');
+      const fileUploadContainer = step28.querySelector('.file-upload-container');
+      const fileInput = step28.querySelector('input[type="file"]');
+      const fileList = step28.querySelector('.file-list');
+      const maxFileSize = 5 * 1024 * 1024; // 5MB
+      const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+
+      // ZAK kude to4no 6te se uploadvat failovete, da se TESTVA
+      fileInput.addEventListener('change', function (e) {
+        const files = Array.from(e.target.files);
+        fileList.innerHTML = '';
+
+        files.forEach(file => {
+          if (!allowedTypes.includes(file.type)) {
+            alert(`File type ${file.type} is not allowed.`);
+            return;
+          }
+
+          if (file.size > maxFileSize) {
+            alert(`File ${file.name} is too large. Maximum size is 5MB.`);
+            return;
+          }
+
+          const fileItem = document.createElement('div');
+          fileItem.className = 'file-item';
+
+          const fileName = document.createElement('span');
+          fileName.textContent = file.name;
+
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-file';
+          removeBtn.textContent = '×';
+          removeBtn.onclick = () => {
+            fileItem.remove();
+            updateFileList();
+          };
+
+          fileItem.appendChild(fileName);
+          fileItem.appendChild(removeBtn);
+          fileList.appendChild(fileItem);
+        });
+
+        updateFileList();
+      });
+
+      function updateFileList() {
+        const files = Array.from(fileList.children);
+        savedAnswers.bloodwork_file_upload = files.map(file => file.querySelector('span').textContent);
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+      }
+
+      step28.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        // if (fileList.children.length > 0) {
+        step28.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep);
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+        // }
+
+        footerVisibility();
+      });
+      //#endregion
+
+      //#region step-29
+      const step29 = document.getElementById('step-29');
+      const step29singleChoiceBtns = step29.getElementsByTagName('button');
+
+      for (let i = 0; i < step29singleChoiceBtns.length; i++) {
+        step29singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.pills = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step29singleChoiceBtns)
+          this.classList.add('selected')
+
+          step29.style.display = 'none';
+          if (selectedItem === 'yes') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-30
+      const step30 = document.getElementById('step-30');
+      const step30inp = step30.getElementsByTagName('textarea')[0];
+
+      step30inp.name = pills_text;
+
+      step30inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]\s+/g, '');
+      })
+
+      step30.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step30inp.value.length > 0) {
+          const value = step30inp.value;
+          savedAnswers.pills_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          step30.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-31
+      const step31 = document.getElementById('step-31');
+      step31.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const selectedOptions = Array.from(step31.getElementsByClassName('goal-option'))
+          .filter(btn => btn.classList.contains('selected'))
+          .map(option => option.textContent);
+
+        if (selectedOptions.length === 0) return;
+
+        savedAnswers.health_issues_checkbox_1 = selectedOptions;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+        if (savedAnswers.health_issues_checkbox_1.some(answer => answer.indexOf('yes') > -1)) {
+          step31.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-32
+      const step32 = document.getElementById('step-32');
+      const step32inp = step32.getElementsByTagName('textarea')[0];
+
+      step32inp.name = health_issues_text;
+
+      step32inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step32.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step32inp.value.length > 0) {
+          const value = step32inp.value;
+          savedAnswers.health_issues_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          step32.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-33
+      const step33 = document.getElementById('step-33');
+      step33.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const selectedOptions = Array.from(step33.getElementsByClassName('goal-option'))
+          .filter(btn => btn.classList.contains('selected'))
+          .map(option => option.textContent);
+
+        if (selectedOptions.length === 0) return;
+
+        savedAnswers.behavior_change_checkbox = selectedOptions;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+        if (savedAnswers.behavior_change_checkbox.some(answer => answer.indexOf('yes') > -1)) {
+          step33.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-34
+      const step34 = document.getElementById('step-34');
+      const step34inp = step34.getElementsByTagName('textarea')[0];
+
+      step34inp.name = behavior_change_text;
+
+      step34inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step34.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step34inp.value.length > 0) {
+          const value = step34inp.value;
+          savedAnswers.behavior_change_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          step34.style.display = 'none';
+          if (savedAnswers.health_condition === 'yes') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-35
+      const step35 = document.getElementById('step-35');
+      const step35singleChoiceBtns = step35.getElementsByTagName('button');
+
+      for (let i = 0; i < step35singleChoiceBtns.length; i++) {
+        step35singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.food_allergies = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step35singleChoiceBtns)
+          this.classList.add('selected')
+
+          step35.style.display = 'none';
+          if (savedAnswers.behavior_change_checkbox.some(answer => answer.indexOf('yes') > -1)) currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-36
+      const step36 = document.getElementById('step-36');
+      const step36inp = step36.getElementsByTagName('textarea')[0];
+
+      step36inp.name = allergies_text;
+
+      step36inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step36.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step36inp.value.length > 0) {
+          const value = step36inp.value;
+          savedAnswers.allergies_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          step36.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-37
+      const step37 = document.getElementById('step-37');
+      step37.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const selectedOptions = Array.from(step37.getElementsByClassName('goal-option'))
+          .filter(btn => btn.classList.contains('selected'))
+          .map(option => option.textContent);
+
+        if (selectedOptions.length === 0) return;
+
+        savedAnswers.allergy_symptoms = selectedOptions;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+        if (selectedOptions.includes('other')) currentStep += 1;
+        step37.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-38
+      const step38 = document.getElementById('step-38');
+      const step38inp = step38.getElementsByTagName('textarea')[0];
+
+      step38inp.name = symptomes_text;
+
+      step38inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step38.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step38inp.value.length > 0) {
+          const value = step38inp.value;
+          savedAnswers.symptomes_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          step38.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-39
+      const step39 = document.getElementById('step-39');
+      const emailInput = step39.querySelector('input[type="email"]');
+      const nameInput = step39.querySelector('input[type="text"]');
+      const nextButton = step39.querySelector('.next-button');
+
+      function isValidEmail(email) {
+        // Regular expression for email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      function isValidName(name) {
+        // Regular expression for name validation (letters and spaces only)
+        const nameRegex = /^[a-zA-Zа-яА-Я\s]+$/;
+        return nameRegex.test(name);
+      }
+
+      function updateEmailValidation() {
+        const email = emailInput.value.trim();
+        if (email === '') {
+          emailInput.style.borderColor = '#000000';
+          return;
+        }
+
+        if (isValidEmail(email)) {
+          emailInput.style.borderColor = '#00ff00';
+        } else {
+          emailInput.style.borderColor = '#ff0000';
+        }
+      }
+
+      function updateNameValidation() {
+        const name = nameInput.value.trim();
+        if (name === '') {
+          nameInput.style.borderColor = '#000000';
+          return;
+        }
+
+        if (isValidName(name)) {
+          nameInput.style.borderColor = '#00ff00';
+        } else {
+          nameInput.style.borderColor = '#ff0000';
+        }
+      }
+
+      function updateNextButton() {
+        const email = emailInput.value.trim();
+        const name = nameInput.value.trim();
+        nextButton.disabled = !(isValidEmail(email) && isValidName(name));
+      }
+
+      emailInput.addEventListener('input', function () {
+        updateEmailValidation();
+        updateNextButton();
+      });
+
+      emailInput.addEventListener('blur', function () {
+        updateEmailValidation();
+        updateNextButton();
+      });
+
+      nameInput.addEventListener('input', function () {
+        // Remove any non-allowed characters and ensure single spaces between words
+        this.value = this.value
+          .replace(/[^a-zA-Zа-яА-Я \s$]\s+$/g, '') // Remove non-allowed characters
+          .replace(/\s{2,}/g, ' '); // Replace multiple spaces with single space
+
+        updateNameValidation();
+        updateNextButton();
+      });
+
+      nameInput.addEventListener('blur', function () {
+        updateNameValidation();
+        updateNextButton();
+      });
+
+      step39.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const email = emailInput.value.trim();
+        const name = nameInput.value.trim();
+
+        if (email && name && isValidEmail(email) && isValidName(name)) {
+          savedAnswers.contact_info = { email, name };
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+          step39.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep);
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      });
+      //#endregion
+
+      //#region step-40
+      const step40 = document.getElementById('step-40');
+      const step40singleChoiceBtns = step40.getElementsByTagName('button');
+
+      for (let i = 0; i < step40singleChoiceBtns.length; i++) {
+        step40singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.peaky_eater = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step40singleChoiceBtns)
+          this.classList.add('selected')
+
+          step40.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-41
+      const step41 = document.getElementById('step-41');
+      const step41singleChoiceBtns = step41.getElementsByTagName('button');
+
+      for (let i = 0; i < step41singleChoiceBtns.length; i++) {
+        step41singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.current_food = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step41singleChoiceBtns)
+          this.classList.add('selected')
+
+          if (selectedItem === 'homemade food') currentStep += 2;
+          else currentStep += 1;
+
+          step41.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-42
+      const step42 = document.getElementById('step-42');
+      const step42inp = step42.getElementsByTagName('textarea')[0];
+
+      step42inp.name = food_brand;
+
+      step42inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step42.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step42inp.value.length > 0) {
+          const value = step42inp.value;
+          savedAnswers.food_brand = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          // if (savedAnswers.health_condition === 'yes') currentStep += 1;
+          // step42.style.display = 'none';
+          // localStorage.setItem('currentStep', currentStep)
+          // document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-43
+      const step43 = document.getElementById('step-43');
+      const step43inp = step43.getElementsByTagName('textarea')[0];
+
+      step43inp.name = homemade_food;
+
+      step43inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step43.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step43inp.value.length > 0) {
+          const value = step43inp.value;
+          savedAnswers.homemade_food = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          currentStep += 1;
+          step43.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-44
+      const step44 = document.getElementById('step-44');
+      step44.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const selectedOptions = Array.from(step44.getElementsByClassName('goal-option'))
+          .filter(btn => btn.classList.contains('selected'))
+          .map(option => option.textContent);
+
+        if (selectedOptions.length === 0) return;
+
+        savedAnswers.food_likes = selectedOptions;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+        if(selectedOptions.includes('other')) currentStep += 1;
+        step44.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
+      })
+      //#endregion
+    
+      //#region step-45
+      const step45 = document.getElementById('step-45');
+      const step45inp = step45.getElementsByTagName('textarea')[0];
+
+      step45inp.name = additional_likes;
+
+      step45inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step45.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step45inp.value.length > 0) {
+          const value = step45inp.value;
+          savedAnswers.additional_likes = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          currentStep += 1;
+          step45.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-46
+      const step46 = document.getElementById('step-46');
+      step46.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        const selectedOptions = Array.from(step46.getElementsByClassName('goal-option'))
+          .filter(btn => btn.classList.contains('selected'))
+          .map(option => option.textContent);
+
+        if (selectedOptions.length === 0) return;
+
+        savedAnswers.doesnt_likes = selectedOptions;
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+        // if (savedAnswers.health_condition === 'yes') currentStep += 1;
+        // step46.style.display = 'none';
+        // localStorage.setItem('currentStep', currentStep)
+        // document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
+      })
+      //#endregion
+
+
+
+      
     });
   </script>
 </head>
@@ -1154,6 +2025,7 @@
     <h2>LOGO Here</h2>
   </div>
 
+  <!-- INPUT example -->
   <div id="step-1" class="question-holder" name="pet_name">
     <h1>What is the name of your pet?</h1>
     <div class="goal-container">
@@ -1429,6 +2301,7 @@
     </div>
   </div>
 
+  <!-- SINGLECHOICE example -->
   <div id="step-24" class="question-holder" name="health_condition">
     <h1>Does <b class="pet_name"></b> have a diagnosed health condition?</h1>
     <div class="goal-container">
@@ -1438,12 +2311,13 @@
   </div>
 
   <div id="step-25" class="question-holder" name="no_health_conditions">
-    <h1>That’s amazing!</h1>
+    <h1>That's amazing!</h1>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
     </div>
   </div>
 
+  <!-- MULTICHOICE example -->
   <div id="step-26" class="question-holder" name="health_condition_checkbox">
     <h1>What is the health condition? (choose all that apply)</h1>
     <div class="goal-container">
@@ -1463,18 +2337,295 @@
     </div>
   </div>
 
-  <div id="step-27" class="question-holder" name="healthcondition_text">
-    <h1>27</h1>
+  <!-- TEXTAREA example -->
+  <div id="step-27" class="question-holder" name="health_condition_text">
+    <h1>Can you give us more details about the condition?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
   </div>
 
-  <div id="step-28" class="question-holder" name="bloodwork_fileupload">
-    <h1>28</h1>
+  <!-- UPLOAD FILE example -->
+  <div id="step-28" class="question-holder" name="bloodwork_file_upload">
+    <h1>Upload the last blood work here if such available.</h1>
+    <div class="goal-container">
+      <div class="file-upload-container">
+        <input type="file" multiple accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx">
+        <p>Click to upload or drag and drop</p>
+        <p>Allowed file types: Images (JPG, PNG, GIF), PDF, Word, Excel</p>
+        <p>Maximum file size: 5MB</p>
+      </div>
+      <div class="file-list"></div>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
   </div>
 
   <div id="step-29" class="question-holder" name="pills">
-    <h1>29</h1>
+    <h1>Does <b class="pet_name"></b> take medicines or food supplements?</h1>
+    <div class="goal-container">
+      <button class="goal-option">yes</button>
+      <button class="goal-option">no</button>
+    </div>
   </div>
 
+  <div id="step-30" class="question-holder" name="pills_text">
+    <h1>What medicines and/or food supplements?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option"
+        placeholder="Example: My cat takes 1 tablet of Prednisolone twice a day. Omega-3 fatty acids 3 times per week."
+        name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-31" class="question-holder" name="health_issues_checkbox_1">
+    <h1>Have any of the following been observed in the last few months? </h1>
+    <div class="goal-container">
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, weight loss</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, weight gain</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, an unexplained vomiting</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, an unexplained diarrhea</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, other</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">no, all is good</button>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-32" class="question-holder" name="health_condition_text">
+    <h1>Tell us more, please.</h1>
+    <div class="goal-container">
+      <textarea class="goal-option"
+        placeholder="Example: my dog lost 2 kg over the last 3 months without obvious reason." name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-33" class="question-holder" name="behavior_change_checkbox">
+    <h1>Have you noticed a change in your pet's behavior or habits?</h1>
+    <div class="goal-container">
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, when peeing</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, when pooping</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, with water drinking</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, with eating</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">yes, other</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">no, all is good</button>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-34" class="question-holder" name="behavior_change_text">
+    <h1>Tell us more, please.</h1>
+    <div class="goal-container">
+      <textarea class="goal-option"
+        placeholder="Example: all of sudden my cat started drinking a lot more water and started peeing quite often."
+        name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-35" class="question-holder" name="food_allergies">
+    <h1>Does <b class="pet_name"></b> has food allergies and/or intolerances?</h1>
+    <div class="goal-container">
+      <button class="goal-option">yes</button>
+      <button class="goal-option">no</button>
+    </div>
+  </div>
+
+  <div id="step-36" class="question-holder" name="health_condition_text">
+    <h1>What allergies and intolerances has the <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" placeholder="Example: my dog is allergic to chicken meat and by-products"
+        name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-37" class="question-holder" name="allergy_symptoms">
+    <h1>What are the symptoms when <b class="pet_name"></b> eats a problematic food?</h1>
+    <div class="goal-container">
+      <button onclick="onMultiSelectClick(this)" class="goal-option">tummy ache</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">diarrhea</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">vomitting</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">itchy skin and/or skin redness</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">breathing troubles</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">no symptoms</button>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-38" class="question-holder" name="symptomes_text">
+    <h1>Tell us more</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-39" class="question-holder" name="contact_info">
+    <h1>At what email can we reach you if we have additional questions?</h1>
+    <div class="goal-container">
+      <input class="goal-option" type="email" maxlength="100">
+    </div>
+    <br>
+
+    <h1>What is your name?</h1>
+    <div class="goal-container">
+      <input class="goal-option" type="text" maxlength="100">
+    </div>
+
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-40" class="question-holder" name="peaky_eater">
+    <h1>Is <b class="pet_name"></b> a peaky eater?</h1>
+    <div class="goal-container">
+      <button class="goal-option">yes</button>
+      <button class="goal-option">no</button>
+    </div>
+  </div>
+
+  <div id="step-41" class="question-holder" name="current_food">
+    <h1>What’s the main source of food for the <b class="pet_name"></b> right now?</h1>
+    <div class="goal-container">
+      <button class="goal-option">kibble</button>
+      <button class="goal-option">pouches and/or wet food</button>
+      <button class="goal-option">homemade food</button>
+    </div>
+  </div>
+
+  <div id="step-42" class="question-holder" name="food_brand">
+    <h1>What brand of food and how much do you feed per day?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-43" class="question-holder" name="homemade_food">
+    <h1>Please, share what is included in the recipe and how much do you feed per day.</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" placeholder="My cat eats ingredient X gram per day, ingredient Y gram per day, etc. " name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-44" class="question-holder" name="food_likes">
+    <h1>What does <b class="pet_name"></b> like to eat? (select multiple foods)</h1>
+    <div class="goal-container">
+      <button onclick="onMultiSelectClick(this)" class="goal-option">chicken meat </button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">turkey meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">lamb meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">rabbit meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">fish</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">eggs</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">chicken liver</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">chicken hearts</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork liver</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork heart</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork kidney</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef liver</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef heart</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef kidney</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">rice</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">quinoa</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">bulgur </button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">macaroni </button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">sweet potatoes</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pumpkin</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">potato</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">carrots</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">zucchini</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">cucumber</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">cabbage</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">apples</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">blueberries</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-45" class="question-holder" name="additional_likes">
+    <h1>What else <b class="pet_name"></b> likes to eat?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-46" class="question-holder" name="doesnt_likes">
+    <h1>What does NOT <b class="pet_name"></b> eat?</h1>
+    <h2 class="danger">Please, select foods that the pet doesn't eat at all or reacts to. If you are not sure if it eats it - don't select it.</h2>
+    <br>
+    <div class="goal-container">
+      <button onclick="onMultiSelectClick(this)" class="goal-option">chicken meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">turkey meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">lamb meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">rabbit meat</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">fish</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">eggs</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">chicken liver</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">chicken hearts</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork liver</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork heart</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pork kidney</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef liver</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef heart</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">beef kidney</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">rice</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">quinoa</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">bulgur </button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">macaroni </button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">sweet potatoes</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pumpkin</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">potato</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">carrots</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">zucchini</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">cucumber</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">cabbage</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">apples</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">blueberries</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
 
 
 
