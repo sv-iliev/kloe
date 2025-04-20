@@ -305,6 +305,18 @@
     const food_likes = 'food_likes';
     const additional_likes = 'additional_likes';
     const doesnt_likes = 'doesnt_likes';
+    const doesnt_likes_other = 'doesnt_likes_other';
+    const rewards = 'rewards';
+    const rewards_text = 'rewards_text';
+    const food_access = 'food_access';
+    const doesnt_likes_other_2 = 'doesnt_likes_other_2';
+    const other_pets = 'other_pets';
+    const food_tracking = 'food_tracking';
+    const begging = 'begging';
+    const begging_text = 'begging_text';
+    const people_feeding = 'people_feeding';
+    const share = 'share';
+    const share_textbox = 'share_textbox';
     //#endregion
 
     //#region Delete localStorage after 48 hours
@@ -724,6 +736,95 @@
           });
         }
 
+        if (savedAnswers?.doesnt_likes_other) {
+          document.getElementById('step-47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
+        }
+        
+        if (savedAnswers?.doesnt_likes_other) {
+          document.getElementById('step-47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
+        }
+
+        if (savedAnswers?.rewards) {
+          const btns = Array.from(document.getElementById('step-48').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.rewards) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+        
+        if (savedAnswers?.rewards_text) {
+          document.getElementById('step-49').getElementsByTagName('textarea')[0].value = savedAnswers.rewards_text;
+        }
+
+        if (savedAnswers?.food_access) {
+          const btns = Array.from(document.getElementById('step-50').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.food_access) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.doesnt_likes_other_2) {
+          document.getElementById('step-51').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other_2;
+        }
+
+        if (savedAnswers?.other_pets) {
+          const btns = Array.from(document.getElementById('step-52').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.other_pets) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+        
+        if (savedAnswers?.food_tracking) {
+          const btns = Array.from(document.getElementById('step-53').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.food_tracking) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+        
+        if (savedAnswers?.begging) {
+          const btns = Array.from(document.getElementById('step-54').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.begging) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.begging_text) {
+          document.getElementById('step-55').getElementsByTagName('textarea')[0].value = savedAnswers.begging_text;
+        }
+
+        if (savedAnswers?.people_feeding) {
+          const btns = Array.from(document.getElementById('step-56').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.people_feeding) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        if (savedAnswers?.share) {
+          const btns = Array.from(document.getElementById('step-58').getElementsByClassName('goal-option'));
+          btns.forEach(btn => {
+            if (btn.textContent === savedAnswers.share) {
+              btn.classList.add('selected');
+            }
+          });
+        }
+
+        // TEXTAREA example
+        if (savedAnswers?.share_textbox) {
+          document.getElementById('step-59').getElementsByTagName('textarea')[0].value = savedAnswers.share_textbox;
+        }
+
+
 
 
         
@@ -840,11 +941,11 @@
       })
       //#endregion
 
-      //#region step-2
+      //#region step-2 only SHOW TEXT
       const step2 = document.getElementById('step-2');
       step2.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        step2.style.display = 'none';
         currentStep += 1;
+        step2.style.display = 'none';
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
@@ -1348,8 +1449,8 @@
           clearAllSelected(step24singleChoiceBtns)
           this.classList.add('selected')
 
-          step24.style.display = 'none';
           currentStep += 1;
+          step24.style.display = 'none';
           if (selectedItem === 'yes') currentStep += 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -1485,8 +1586,8 @@
 
       step28.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         // if (fileList.children.length > 0) {
-        step28.style.display = 'none';
         currentStep += 1;
+        step28.style.display = 'none';
         localStorage.setItem('currentStep', currentStep);
         document.getElementById(`step-${currentStep}`).style.display = 'block';
         // }
@@ -2003,10 +2104,317 @@
         savedAnswers.doesnt_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        // if (savedAnswers.health_condition === 'yes') currentStep += 1;
-        // step46.style.display = 'none';
-        // localStorage.setItem('currentStep', currentStep)
-        // document.getElementById(`step-${currentStep}`).style.display = 'block';
+        if (selectedOptions.includes('other')) currentStep += 1;
+        step46.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-47
+      const step47 = document.getElementById('step-47');
+      const step47inp = step47.getElementsByTagName('textarea')[0];
+
+      step47inp.name = doesnt_likes_other;
+
+      step47inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step47.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step47inp.value.length > 0) {
+          const value = step47inp.value;
+          savedAnswers.doesnt_likes_other = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          currentStep += 1;
+          step47.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-48
+      const step48 = document.getElementById('step-48');
+      const step48singleChoiceBtns = step48.getElementsByTagName('button');
+
+      for (let i = 0; i < step48singleChoiceBtns.length; i++) {
+        step48singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.rewards = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step48singleChoiceBtns)
+          this.classList.add('selected')
+
+          if (selectedItem === 'yes') currentStep += 1;
+          step48.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-49
+      const step49 = document.getElementById('step-49');
+      const step49inp = step49.getElementsByTagName('textarea')[0];
+
+      step49inp.name = rewards_text;
+
+      step49inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step49.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step49inp.value.length > 0) {
+          const value = step49inp.value;
+          savedAnswers.rewards_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          currentStep += 1;
+          step49.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-50
+      const step50 = document.getElementById('step-50');
+      const step50singleChoiceBtns = step50.getElementsByTagName('button');
+
+      for (let i = 0; i < step50singleChoiceBtns.length; i++) {
+        step50singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.food_access = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step50singleChoiceBtns)
+          this.classList.add('selected')
+
+          if (selectedItem === 'other') currentStep += 1;
+          step50.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-51
+      const step51 = document.getElementById('step-51');
+      const step51inp = step51.getElementsByTagName('textarea')[0];
+
+      step51inp.name = doesnt_likes_other_2;
+
+      step51inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step51.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step51inp.value.length > 0) {
+          const value = step51inp.value;
+          savedAnswers.doesnt_likes_other_2 = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          currentStep += 1;
+          step51.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-52
+      const step52 = document.getElementById('step-52');
+      const step52singleChoiceBtns = step52.getElementsByTagName('button');
+
+      for (let i = 0; i < step52singleChoiceBtns.length; i++) {
+        step52singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.other_pets = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step52singleChoiceBtns)
+          this.classList.add('selected')
+
+          currentStep += 1;
+          step52.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-53
+      const step53 = document.getElementById('step-53');
+      const step53singleChoiceBtns = step53.getElementsByTagName('button');
+
+      for (let i = 0; i < step53singleChoiceBtns.length; i++) {
+        step53singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.food_tracking = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step53singleChoiceBtns)
+          this.classList.add('selected')
+
+          currentStep += 1;
+          step53.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-54
+      const step54 = document.getElementById('step-54');
+      const step54singleChoiceBtns = step54.getElementsByTagName('button');
+
+      for (let i = 0; i < step54singleChoiceBtns.length; i++) {
+        step54singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.begging = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step54singleChoiceBtns)
+          this.classList.add('selected')
+
+          if(selectedItem === 'yes') currentStep += 1;
+          step54.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-55
+      const step55 = document.getElementById('step-55');
+      const step55inp = step55.getElementsByTagName('textarea')[0];
+
+      step55inp.name = begging_text;
+
+      step55inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step55.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step55inp.value.length > 0) {
+          const value = step55inp.value;
+          savedAnswers.begging_text = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          currentStep += 1;
+          step55.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-56
+      const step56 = document.getElementById('step-56');
+      const step56singleChoiceBtns = step56.getElementsByTagName('button');
+
+      for (let i = 0; i < step56singleChoiceBtns.length; i++) {
+        step56singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.people_feeding = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step56singleChoiceBtns)
+          this.classList.add('selected')
+
+          currentStep += 1;
+          step56.style.display = 'none';
+          if (selectedItem === 'yes') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-57
+      const step57 = document.getElementById('step-57');
+      step57.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        currentStep += 1;
+        step57.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+        footerVisibility();
+      })
+      //#endregion
+
+      //#region step-58
+      const step58 = document.getElementById('step-58');
+      const step58singleChoiceBtns = step58.getElementsByTagName('button');
+
+      for (let i = 0; i < step58singleChoiceBtns.length; i++) {
+        step58singleChoiceBtns[i].addEventListener('click', function () {
+          const selectedItem = this.textContent.trim();
+          savedAnswers.share = selectedItem;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          clearAllSelected(step58singleChoiceBtns)
+          this.classList.add('selected')
+
+          if (selectedItem === 'yes') currentStep += 1;
+          step58.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+          footerVisibility();
+        })
+      }
+      //#endregion
+
+      //#region step-59
+      const step59 = document.getElementById('step-59');
+      const step59inp = step59.getElementsByTagName('textarea')[0];
+
+      step59inp.name = share_textbox;
+
+      step59inp.addEventListener('input', function () {
+        // ZAK da se dobavqt nqkakvi ograni4eniq na input
+        // if (this.value.length > 30) return;
+        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+      })
+
+      step59.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        if (step59inp.value.length > 0) {
+          const value = step59inp.value;
+          savedAnswers.share_textbox = value;
+          localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+          currentStep += 1;
+          step59.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+        }
 
         footerVisibility();
       })
@@ -2036,6 +2444,7 @@
     </div>
   </div>
 
+  <!-- only SHOW TEXT -->
   <div id="step-2" class="question-holder" name="thank_you_pawsome">
     <p>Millions of loved pets face health challenges due to eating food that isn't aligned with their needs.</p>
     <br>
@@ -2627,6 +3036,130 @@
     </div>
   </div>
 
+  <div id="step-47" class="question-holder" name="doesnt_likes_other">
+    <h1>What else she/he doesn’t like?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-48" class="question-holder" name="rewards">
+    <h1>Does <b class="pet_name"></b> eat rewards?</h1>
+    <div class="goal-container">
+      <button class="goal-option">yes</button>
+      <button class="goal-option">no</button>
+    </div>
+  </div>
+
+  <div id="step-49" class="question-holder" name="rewards_text">
+    <h1>What rewards? How often and how much?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-50" class="question-holder" name="food_access">
+    <h1>Does <b class="pet_name"></b> have constant access to food?</h1>
+    <div class="goal-container">
+      <button class="goal-option">yes</button>
+      <button class="goal-option">no. I serve the food following a schedule and remove it after that.</button>
+      <button class="goal-option">other</button>
+    </div>
+  </div>
+
+  <div id="step-51" class="question-holder" name="doesnt_likes_other_2">
+    <h1>Tell us more, please.</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-52" class="question-holder" name="other_pets">
+    <h1>Does <b class="pet_name"></b> eat with other pet(s)?</h1>
+    <div class="goal-container">
+      <button class="goal-option">no</button>
+      <button class="goal-option">yes, shares a bowl with other pet(s)</button>
+      <button class="goal-option">yes, but has own bowl</button>
+    </div>
+  </div>
+
+  <div id="step-53" class="question-holder" name="food_tracking">
+    <h1>Can you track how much the <b class="pet_name"></b> eat per day?</h1>
+    <div class="goal-container">
+      <button class="goal-option">no</button>
+      <button class="goal-option">yes</button>
+      <button class="goal-option">very difficult, but yes</button>
+    </div>
+  </div>
+
+  <div id="step-54" class="question-holder" name="begging">
+    <h1>Is <b class="pet_name"></b> begging for food?</h1>
+    <div class="goal-container">
+      <button class="goal-option">no</button>
+      <button class="goal-option">yes</button>
+      <button class="goal-option">sometimes, for certain foods only</button>
+    </div>
+  </div>
+
+  <div id="step-55" class="question-holder" name="begging_text">
+    <h1>For what food?</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-56" class="question-holder" name="people_feeding">
+    <h1>Who feeds <b class="pet_name"></b>?</h1>
+    <div class="goal-container">
+      <button class="goal-option">only I</button>
+      <button class="goal-option">multiple family members</button>
+    </div>
+  </div>
+
+  <div id="step-57" class="question-holder" name="almost_ready">
+    <h1>We are almost ready :)</h1>
+    <div class="next-button-holder">
+      <div class="next-button-holder">
+        <button class="next-button">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="step-58" class="question-holder" name="share">
+    <h1>Do you want to share something else with us?</h1>
+    <div class="goal-container">
+      <button class="goal-option">yes</button>
+      <button class="goal-option">no</button>
+    </div>
+  </div>
+
+  <div id="step-59" class="question-holder" name="share_textbox">
+    <h1>Please, share it here</h1>
+    <div class="goal-container">
+      <textarea class="goal-option" name=""></textarea>
+    </div>
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="step-60" class="question-holder" name="loader">
+    <div class="next-button-holder">
+      <button class="next-button">Next</button>
+    </div>
+  </div>
 
 
   <div class="footer">
