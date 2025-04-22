@@ -430,7 +430,18 @@
     //#endregion
 
     //#region outside functions
-    function onMultiSelectClick(el) {
+    function onMultiSelectClick(el, exeption) {
+      const elSiblings = el.parentElement.children;
+
+      if (el.textContent === exeption) {
+        for (let i = 0; i < elSiblings.length; i++) {
+          const siblings = elSiblings[i];
+          siblings.classList.remove('selected');
+        }
+      } else {
+        elSiblings.item(elSiblings.length - 1).classList.remove('selected');
+      }
+
       el.classList.toggle("selected");
     }
 
@@ -959,7 +970,8 @@
           if (currentStep === 7 ||
             currentStep === 8 ||
             currentStep === 10 ||
-            currentStep === 11
+            currentStep === 11 ||
+            currentStep === 31
           ) {
             currentStep -= 1;
             if (savedAnswers.species === 'ferret') currentStep -= 1;
@@ -1017,11 +1029,12 @@
 
           }
 
+          if (currentStep === 33 && savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') currentStep -= 1;
+
           if (currentStep === 43) {
             if (savedAnswers.current_food === 'homemade food') currentStep -= 1;
 
           }
-
 
           currentStep -= 1;
           localStorage.setItem('currentStep', currentStep)
@@ -1755,7 +1768,8 @@
           this.classList.add('selected')
 
           step29.style.display = 'none';
-          if (selectedItem === 'yes') currentStep += 1;
+          currentStep += 1;
+          if (selectedItem === 'no') currentStep += 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
@@ -1803,12 +1817,11 @@
         savedAnswers.health_issues_checkbox_1 = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers.health_issues_checkbox_1.some(answer => answer.indexOf('yes') > -1)) {
-          step31.style.display = 'none';
-          currentStep += 1;
-          localStorage.setItem('currentStep', currentStep)
-          document.getElementById(`step-${currentStep}`).style.display = 'block';
-        }
+        currentStep += 1;
+        if (savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') currentStep += 1;
+        step31.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
       })
@@ -3046,7 +3059,7 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, an unexplained vomiting</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, an unexplained diarrhea</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, other</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">no, all is good</button>
+      <button onclick="onMultiSelectClick(this, 'no, all is good')" class="goal-option">no, all is good</button>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
