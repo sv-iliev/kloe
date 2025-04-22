@@ -10,6 +10,7 @@
     :root {
       --logo-holder-dimensions: 3rem;
     }
+
     * {
       margin: 0;
       padding: 0;
@@ -146,7 +147,7 @@
       margin-bottom: 3rem;
     }
 
-    .logo-holder > img {
+    .logo-holder>img {
       width: var(--logo-holder-dimensions);
       height: var(--logo-holder-dimensions);
     }
@@ -161,19 +162,44 @@
     }
 
     .toggle-button {
+      position: relative;
+      width: 60px;
+      height: 30px;
       background-color: #ffcb00;
-      border: 2px solid #000000;
-      border-radius: 12px;
-      padding: 0.5rem 1rem;
+      border-radius: 15px;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-size: 1rem;
-      color: #000000;
+      border: 2px solid #000000;
     }
 
-    .toggle-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .toggle-button::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-button.active {
+      background-color: #ffcb00;
+    }
+
+    .toggle-button.active::before {
+      transform: translateX(30px);
+    }
+
+    .toggle-label {
+      font-size: 1rem;
+      color: #000000;
+      font-weight: bold;
+    }
+
+    .toggle-label:last-child {
+      color: rgb(136, 136, 136);
     }
 
     .file-upload-container {
@@ -457,7 +483,7 @@
     //   // Update the input value
     //   input.value = value;
     // }
-  
+
     //#endregion 
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -825,7 +851,7 @@
         if (savedAnswers?.doesnt_likes_other) {
           document.getElementById('step-47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
         }
-        
+
         if (savedAnswers?.doesnt_likes_other) {
           document.getElementById('step-47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
         }
@@ -838,7 +864,7 @@
             }
           });
         }
-        
+
         if (savedAnswers?.rewards_text) {
           document.getElementById('step-49').getElementsByTagName('textarea')[0].value = savedAnswers.rewards_text;
         }
@@ -864,7 +890,7 @@
             }
           });
         }
-        
+
         if (savedAnswers?.food_tracking) {
           const btns = Array.from(document.getElementById('step-53').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
@@ -873,7 +899,7 @@
             }
           });
         }
-        
+
         if (savedAnswers?.begging) {
           const btns = Array.from(document.getElementById('step-54').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
@@ -920,7 +946,7 @@
 
 
 
-        
+
       }
       //#endregion
 
@@ -936,7 +962,7 @@
             currentStep === 11
           ) {
             currentStep -= 1;
-            if(savedAnswers.species === 'ferret') currentStep -= 1;
+            if (savedAnswers.species === 'ferret') currentStep -= 1;
           }
 
           if (currentStep === 12) {
@@ -996,7 +1022,7 @@
 
           }
 
-          
+
           currentStep -= 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -1267,7 +1293,7 @@
 
       step12.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         savedAnswers.number_of_babies = Number(step12babiesInp.value);
-        
+
         const step12bornAtVal = step12bornAtInp.value;
         if (step12bornAtVal === '') return;
 
@@ -1514,25 +1540,20 @@
       const step23 = document.getElementById('step-23');
       const step23inp = step23.getElementsByTagName('input')[0];
       const weightToggle = document.getElementById('weight-toggle');
+      weightToggle.textContent = '';
+
       let isKg = true;
 
       step23inp.name = current_weight;
 
       weightToggle.addEventListener('click', function () {
         isKg = !isKg;
-        this.textContent = isKg ? 'kg' : 'lbs';
+        this.classList.toggle('active');
 
-        // // Convert the current value
-        // const currentValue = parseFloat(step23inp.value);
-        // if (!isNaN(currentValue)) {
-        //   if (isKg) {
-        //     // Convert from lbs to kg
-        //     step23inp.value = (currentValue * 0.453592).toFixed(2);
-        //   } else {
-        //     // Convert from kg to lbs
-        //     step23inp.value = (currentValue * 2.20462).toFixed(2);
-        //   }
-        // }
+        // Update labels
+        const labels = this.parentElement.querySelectorAll('.toggle-label');
+        labels[0].style.color = isKg ? '#000000' : '#888888';
+        labels[1].style.color = isKg ? '#888888' : '#000000';
       });
 
       step23inp.addEventListener('input', function () {
@@ -2179,7 +2200,7 @@
         savedAnswers.food_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if(selectedOptions.includes('other')) currentStep += 1;
+        if (selectedOptions.includes('other')) currentStep += 1;
         step44.style.display = 'none';
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2187,7 +2208,7 @@
         footerVisibility();
       })
       //#endregion
-    
+
       //#region step-45
       const step45 = document.getElementById('step-45');
       const step45inp = step45.getElementsByTagName('textarea')[0];
@@ -2422,7 +2443,7 @@
           clearAllSelected(step54singleChoiceBtns)
           this.classList.add('selected')
 
-          if(selectedItem === 'yes') currentStep += 1;
+          if (selectedItem === 'yes') currentStep += 1;
           step54.style.display = 'none';
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2539,11 +2560,11 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
 
-          
+
 
           // Start the loader 1 second after step-60 is displayed
           setTimeout(() => {
-            if(document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
+            if (document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
           }, 1000);
         }
 
@@ -2623,7 +2644,7 @@
 
       footerVisibility();
       //#endregion
-    
+
       //#region step-61
       const step61 = document.getElementById('step-61');
       step61.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2633,11 +2654,11 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
         footerVisibility();
       })
-      
+
       //#endregion
 
 
-      
+
     });
   </script>
 </head>
@@ -2688,7 +2709,8 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">to lose weight</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to get support with health challenges</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to get skin and coat issues resolved</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to get help with food allergy and/or intolerances</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to get help with food allergy and/or
+        intolerances</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to balance better food</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to have long-term health</button>
     </div>
@@ -2922,7 +2944,9 @@
     <div class="goal-container">
       <input class="goal-option" type="number" min="0" max="999" value="0" step=".01">
       <div class="toggle-container">
-        <button class="toggle-button" id="weight-toggle">kg</button>
+        <span class="toggle-label">kg</span>
+        <div class="toggle-button" id="weight-toggle"></div>
+        <span class="toggle-label">lbs</span>
       </div>
     </div>
     <div class="next-button-holder">
@@ -3138,7 +3162,7 @@
   </div>
 
   <div id="step-41" class="question-holder" name="current_food">
-    <h1>What’s the main source of food for the <b class="pet_name"></b> right now?</h1>
+    <h1>What's the main source of food for the <b class="pet_name"></b> right now?</h1>
     <div class="goal-container">
       <button class="goal-option">kibble</button>
       <button class="goal-option">pouches and/or wet food</button>
@@ -3159,7 +3183,8 @@
   <div id="step-43" class="question-holder" name="homemade_food">
     <h1>Please, share what is included in the recipe and how much do you feed per day.</h1>
     <div class="goal-container">
-      <textarea class="goal-option" placeholder="My cat eats ingredient X gram per day, ingredient Y gram per day, etc. " name=""></textarea>
+      <textarea class="goal-option"
+        placeholder="My cat eats ingredient X gram per day, ingredient Y gram per day, etc. " name=""></textarea>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
@@ -3217,7 +3242,8 @@
 
   <div id="step-46" class="question-holder" name="doesnt_likes">
     <h1>What does NOT <b class="pet_name"></b> eat?</h1>
-    <h2 class="danger">Please, select foods that the pet doesn't eat at all or reacts to. If you are not sure if it eats it - don't select it.</h2>
+    <h2 class="danger">Please, select foods that the pet doesn't eat at all or reacts to. If you are not sure if it eats
+      it - don't select it.</h2>
     <br>
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this)" class="goal-option">chicken meat</button>
@@ -3257,7 +3283,7 @@
   </div>
 
   <div id="step-47" class="question-holder" name="doesnt_likes_other">
-    <h1>What else she/he doesn’t like?</h1>
+    <h1>What else she/he doesn't like?</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
     </div>
@@ -3374,7 +3400,7 @@
       <button class="next-button">Next</button>
     </div>
   </div>
-  
+
   <div id="step-60" class="question-holder" name="loader">
     <h1>Creating your pet's meal plan...</h1>
     <div class="circle-loader-container">
@@ -3412,11 +3438,11 @@
     </div>
     <div class="next-button-holder">
       <div class="next-button-holder">
-        <button class="next-button">All good! Let’s go to payment</button>
+        <button class="next-button">All good! Let's go to payment</button>
       </div>
     </div>
   </div>
-  
+
   <div id="step-62" class="question-holder" name="">
     <h1>STRIPE</h1>
   </div>
