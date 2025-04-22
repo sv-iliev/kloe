@@ -325,6 +325,23 @@
       text-align: left;
     }
 
+    .progress-holder {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0.5rem;
+      background-color: #f0f0f0;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #ffcb00;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
     @media (min-width: 481px) {
       .goal-option:hover {
         background-color: #ffe580;
@@ -512,7 +529,9 @@
 
       const footer = document.getElementsByClassName('footer')[0];
       const footerVisibility = () => { currentStep === 1 ? footer.style.display = 'block' : footer.style.display = 'none'; };
+
       footerVisibility();
+      updateProgressBar();
 
       //#region Get/create savedAnswers from/in localStorage
       let savedAnswers = JSON.parse(localStorage.getItem('savedAnswers'));
@@ -1042,8 +1061,20 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
+
+      function updateProgressBar() {
+        const totalSteps = document.querySelectorAll('.question-holder').length;
+        const currentStep = parseInt(localStorage.getItem('currentStep') || '1');
+        const progressPercentage = ((currentStep - 1) / totalSteps) * 100;
+
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+          progressBar.style.width = `${progressPercentage}%`;
+        }
+      }
 
       //#region step-1 INPUT example
       const step1 = document.getElementById('step-1');
@@ -1073,6 +1104,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1085,6 +1117,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1108,6 +1141,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1120,6 +1154,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1144,6 +1179,7 @@
 
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1171,6 +1207,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1184,6 +1221,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1207,6 +1245,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1233,6 +1272,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1257,6 +1297,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1287,6 +1328,7 @@
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1324,6 +1366,7 @@
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1345,6 +1388,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1367,6 +1411,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1389,6 +1434,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1413,6 +1459,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1435,6 +1482,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1457,6 +1505,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1479,6 +1528,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1501,6 +1551,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1523,6 +1574,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1545,6 +1597,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1591,6 +1644,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1613,6 +1667,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1628,6 +1683,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1650,6 +1706,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1678,6 +1735,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1751,6 +1809,7 @@
         // }
 
         footerVisibility();
+        updateProgressBar();
       });
       //#endregion
 
@@ -1773,6 +1832,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1802,6 +1862,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1824,6 +1885,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1852,6 +1914,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1876,6 +1939,7 @@
 
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1904,6 +1968,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1925,6 +1990,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -1954,6 +2020,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -1974,6 +2041,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2002,6 +2070,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2096,6 +2165,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       });
       //#endregion
 
@@ -2117,6 +2187,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2141,6 +2212,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2170,6 +2242,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2198,6 +2271,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2219,6 +2293,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2247,6 +2322,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2268,6 +2344,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2296,6 +2373,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2317,6 +2395,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2346,6 +2425,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2367,6 +2447,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2396,6 +2477,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2417,6 +2499,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2439,6 +2522,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2461,6 +2545,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2490,6 +2575,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2512,6 +2598,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2525,6 +2612,7 @@
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2546,6 +2634,7 @@
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
+          updateProgressBar();
         })
       }
       //#endregion
@@ -2582,6 +2671,7 @@
         }
 
         footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
@@ -2656,6 +2746,7 @@
       }
 
       footerVisibility();
+      updateProgressBar();
       //#endregion
 
       //#region step-61
@@ -2666,17 +2757,20 @@
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
         footerVisibility();
+        updateProgressBar();
       })
 
       //#endregion
-
-
 
     });
   </script>
 </head>
 
 <body>
+  <div class="progress-holder">
+    <div class="progress-bar"></div>
+  </div>
+
   <div class="logo-holder">
     <a href="#" class="back-arrow">←</a>
     <img src="https://i.ibb.co/RkTT5N9N/Kloe-logo-yellow.png" alt="website logo">
@@ -3459,7 +3553,6 @@
   <div id="step-62" class="question-holder" name="">
     <h1>STRIPE</h1>
   </div>
-
 
   <div class="footer">
     <span>By choosing to type your pet name and continuing, you agree to our </span>
