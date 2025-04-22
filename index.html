@@ -232,34 +232,91 @@
       color: red;
     }
 
-  @media (min-width: 481px) {
-    .goal-option:hover {
-      background-color: #ffe580;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  @media (max-width: 480px) {
-    h1 {
-      font-size: 1.8rem;
+    .circle-loader-container {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      margin: 2rem auto;
     }
 
-    .goal-option {
-      font-size: 1rem;
-      padding: 1.2rem;
+    .circle-loader {
+      width: 100%;
+      height: 100%;
+      border: 10px solid #ffcb00;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
     }
 
-    body {
-      padding: 1rem;
+    .circle-loader::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 10px solid #ffffff;
+      border-radius: 50%;
+      box-sizing: border-box;
     }
 
-    .back-arrow {
-      left: 1rem;
-      top: 1rem;
-      font-size: 1.5rem;
+    .circle-loader-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: #ffcb00;
+      transition: height 0.1s linear;
     }
-  }
+
+    .circle-loader-percentage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000000;
+      z-index: 1;
+    }
+
+    #step-60 .next-button {
+      display: none;
+    }
+
+    #step-61 {
+      text-align: left;
+    }
+
+    @media (min-width: 481px) {
+      .goal-option:hover {
+        background-color: #ffe580;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .goal-option {
+        font-size: 1rem;
+        padding: 1.2rem;
+      }
+
+      body {
+        padding: 1rem;
+      }
+
+      .back-arrow {
+        left: 1rem;
+        top: 1rem;
+        font-size: 1.5rem;
+      }
+    }
   </style>
 
   <script>
@@ -345,7 +402,7 @@
       }
     }
 
-    function makeStrFromArr(options) {
+    function combineSelectedOptions(options) {
       let str = '';
       options.forEach((option, idx) => {
         str += option
@@ -428,7 +485,7 @@
           });
 
           const mealplan_goal_items = document.getElementsByClassName(mealplan_goal);
-          for (let i = 0; i < mealplan_goal_items.length; i++) mealplan_goal_items[i].textContent = makeStrFromArr(savedAnswers.mealplan_goal);
+          for (let i = 0; i < mealplan_goal_items.length; i++) mealplan_goal_items[i].textContent = combineSelectedOptions(savedAnswers.mealplan_goal);
         }
 
         if (savedAnswers?.species) {
@@ -824,6 +881,13 @@
           document.getElementById('step-59').getElementsByTagName('textarea')[0].value = savedAnswers.share_textbox;
         }
 
+        if (savedAnswers?.partialSavedInfo) {
+          const items = Array.from(document.getElementById('step-61').getElementsByClassName('saved-info'));
+          items.forEach((item, index) => {
+            item.textContent = savedAnswers.partialSavedInfo[index] || '';
+          });
+        }
+
 
 
 
@@ -963,7 +1027,7 @@
         if (selectedOptions.length === 0) return;
 
         const mealplan_goal_items = document.getElementsByClassName(mealplan_goal);
-        for (let i = 0; i < mealplan_goal_items.length; i++) mealplan_goal_items[i].textContent = makeStrFromArr(selectedOptions);
+        for (let i = 0; i < mealplan_goal_items.length; i++) mealplan_goal_items[i].textContent = combineSelectedOptions(selectedOptions);
 
         savedAnswers.mealplan_goal = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
@@ -2414,12 +2478,103 @@
           step59.style.display = 'none';
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
+
+          
+
+          // Start the loader 1 second after step-60 is displayed
+          setTimeout(() => {
+            if(document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
+          }, 1000);
         }
 
         footerVisibility();
       })
       //#endregion
 
+      //#region step-60
+      const step60 = document.getElementById('step-60');
+      const step60nextBtn = step60.getElementsByClassName('next-button')[0];
+      const circleLoaderProgress = step60.querySelector('.circle-loader-progress');
+      const circleLoaderPercentage = step60.querySelector('.circle-loader-percentage');
+      const duration = 3000; // 3 seconds
+      let animationFrameId = null;
+
+      step60nextBtn.addEventListener('click', function () {
+        const partialSavedInfo = [];
+        partialSavedInfo.push(combineSelectedOptions(savedAnswers.mealplan_goal));
+        partialSavedInfo.push(`${savedAnswers[current_weight].weight} ${savedAnswers[current_weight].type}`);
+        partialSavedInfo.push(savedAnswers.food_allergies);
+        partialSavedInfo.push(`${savedAnswers.health_condition}, ${combineSelectedOptions(savedAnswers.health_condition_checkbox)}`);
+        partialSavedInfo.push(savedAnswers.peaky_eater);
+        partialSavedInfo.push(combineSelectedOptions(savedAnswers.food_likes));
+        partialSavedInfo.push(combineSelectedOptions(savedAnswers.doesnt_likes));
+
+        savedAnswers.partialSavedInfo = partialSavedInfo
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
+        const step61items = document.getElementById('step-61').getElementsByClassName('saved-info');
+        for (let i = 0; i < step61items.length; i++) {
+          const element = step61items[i];
+          element.textContent = partialSavedInfo[i];
+        }
+
+        step60.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep);
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+      })
+
+
+      function startCircleLoader() {
+        circleLoaderProgress.style.height = '0%';
+        circleLoaderPercentage.textContent = '0%';
+        const startTime = Date.now();
+
+        function updateCircleLoader() {
+          const currentTime = Date.now();
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const percentage = Math.floor(progress * 100);
+
+          circleLoaderProgress.style.height = `${progress * 100}%`;
+          circleLoaderPercentage.textContent = `${percentage}%`;
+
+          if (progress < 1) {
+            animationFrameId = requestAnimationFrame(updateCircleLoader);
+          } else {
+            // Ensure final percentage is 100%
+            circleLoaderPercentage.textContent = '100%';
+            step60nextBtn.style.display = 'inline';
+          }
+        }
+
+        // Start the loader animation
+        updateCircleLoader();
+      }
+
+      function stopCircleLoader() {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        circleLoaderProgress.style.height = '0%';
+        circleLoaderPercentage.textContent = '0%';
+      }
+
+      footerVisibility();
+      //#endregion
+    
+      //#region step-61
+      const step61 = document.getElementById('step-61');
+      step61.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        currentStep += 1;
+        step61.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+        footerVisibility();
+      })
+      
+      //#endregion
 
 
       
@@ -2473,8 +2628,7 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">to lose weight</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to get support with health challenges</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to get skin and coat issues resolved</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to get help with food allergy and/or
-        intolerances</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">to get help with food allergy and/or intolerances</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to balance better food</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">to have long-term health</button>
     </div>
@@ -3154,11 +3308,51 @@
       <button class="next-button">Next</button>
     </div>
   </div>
-
+  
   <div id="step-60" class="question-holder" name="loader">
+    <h1>Creating your pet's meal plan...</h1>
+    <div class="circle-loader-container">
+      <div class="circle-loader">
+        <div class="circle-loader-progress"></div>
+        <div class="circle-loader-percentage">0%</div>
+      </div>
+    </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
     </div>
+  </div>
+
+  <div id="step-61" class="question-holder" name="wellness_profile">
+    <div>
+      <b>Goal:</b> <span class="saved-info"></span>
+    </div>
+    <div>
+      <b>Current weight:</b> <span class="saved-info"></span>
+    </div>
+    <div>
+      <b>Allergies:</b> <span class="saved-info"></span>
+    </div>
+    <div>
+      <b>Health challenges:</b> <span class="saved-info"></span>
+    </div>
+    <div>
+      <b>Peaky eater:</b> <span class="saved-info"></span>
+    </div>
+    <div>
+      <b>Likes to eat:</b> <span class="saved-info"></span>
+    </div>
+    <div>
+      <b>Doesn't like to eat:</b> <span class="saved-info"></span>
+    </div>
+    <div class="next-button-holder">
+      <div class="next-button-holder">
+        <button class="next-button">All good! Let’s go to payment</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="step-62" class="question-holder" name="">
+    <h1>STRIPE</h1>
   </div>
 
 
