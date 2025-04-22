@@ -905,7 +905,10 @@
             currentStep === 8 ||
             currentStep === 10 ||
             currentStep === 11
-          ) currentStep -= 1;
+          ) {
+            currentStep -= 1;
+            if(savedAnswers.species === 'ferret') currentStep -= 1;
+          }
 
           if (currentStep === 12) {
             currentStep -= 2;
