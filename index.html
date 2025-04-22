@@ -339,6 +339,7 @@
     const female_castration = 'female_castration';
     const male_castration = 'male_castration';
     const due_date = 'due_date';
+    const number_of_babies = 'number_of_babies';
     const ferret_age = 'ferret_age';
     const cat_age = 'cat_age';
     const dog_age = 'dog_age';
@@ -536,6 +537,12 @@
               btn.classList.add('selected');
             }
           });
+        }
+
+        // single INPUT example
+        if (savedAnswers?.number_of_babies) {
+          const inp = Array.from(document.getElementById('step-12').getElementsByClassName('goal-option'))[0];
+          inp.value = savedAnswers.number_of_babies;
         }
 
         if (savedAnswers?.ferret_age) {
@@ -1230,7 +1237,17 @@
 
       //#region step-12
       const step12 = document.getElementById('step-12');
+      const step12inp = step12.getElementsByClassName('goal-option')[0];
+      step12inp.addEventListener('input', function () {
+        if(this.value < 0) this.value = 0;
+        if(this.value > 99) this.value = 100;
+      })
+
+
       step12.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        savedAnswers.number_of_babies = Number(step12inp.value);
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+
         step12.style.display = 'none';
         if (savedAnswers?.species === "ferret") currentStep += 1;
         if (savedAnswers?.species === "cat") currentStep += 2;
@@ -2752,7 +2769,7 @@
   <div id="step-12" class="question-holder" name="numer_of_babies">
     <h1>How many babies has she?</h1>
     <div class="goal-container">
-      <input class="goal-option" type="text" maxlength="100">
+      <input class="goal-option" type="number" value="0" min="0" max="100">
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
