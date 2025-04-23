@@ -1048,7 +1048,7 @@
 
           if (currentStep === 23) {
             if (savedAnswers.species === 'cat') currentStep -= 1;
-            if (savedAnswers.species === 'dog') currentStep -= 2;
+            if (savedAnswers.species === 'ferret') currentStep -= 2;
           }
 
           if (currentStep === 26) {
@@ -1056,8 +1056,7 @@
           }
 
           if (currentStep === 29) {
-            if (savedAnswers.health_condition === 'no') currentStep -= 4;
-
+            if (savedAnswers.health_condition === 'no') currentStep -= 3;
           }
 
           if (currentStep === 33 && savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') currentStep -= 1;
@@ -1178,6 +1177,20 @@
         step5singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
           savedAnswers.species = selectedItem;
+
+          if (selectedItem === 'ferret') {
+            savedAnswers.cat_age = null;
+            savedAnswers.dog_age = null;
+          }
+          if (selectedItem === 'cat') {
+            savedAnswers.ferret_age = null;
+            savedAnswers.dog_age = null;
+          }
+          if (selectedItem === 'dog') {
+            savedAnswers.ferret_age = null;
+            savedAnswers.cat_age = null;
+          }
+          
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step5singleChoiceBtns)
