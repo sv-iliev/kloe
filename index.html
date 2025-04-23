@@ -125,13 +125,17 @@
       cursor: auto;
     }
 
-    #step-2,
-    #step-4 {
+    /* #2, #4, #61 */
+    /* .question-holder:nth-child(62) */
+    .question-holder:nth-child(4),
+    .question-holder:nth-child(6),
+    .question-holder:nth-child(63) {
       text-align: left;
       font-size: 1.5rem;
     }
 
-    #step-5 img {
+    /* #5 */
+    .question-holder:nth-child(7) img {
       width: 100px;
       height: 100px;
     }
@@ -150,7 +154,6 @@
       width: var(--logo-holder-dimensions);
       height: var(--logo-holder-dimensions);
     }
-
 
     .toggle-container {
       display: flex;
@@ -316,12 +319,9 @@
       z-index: 1;
     }
 
-    #step-60 .next-button {
+    /* #60 */
+    .question-holder:nth-child(62) .next-button {
       display: none;
-    }
-
-    #step-61 {
-      text-align: left;
     }
 
     .progress-holder {
@@ -521,29 +521,39 @@
       //#region Get/create steps from/in localStorage
       let steps = localStorage.getItem('steps');
       if (steps === null) {
-        steps = ['pet_name'];
+        steps = [1];
         localStorage.setItem('steps', JSON.stringify(steps));
       } else {
         steps = JSON.parse(steps);
       }
       
-      document.getElementsByName(steps[steps.length - 1])[0].style.display = 'block';
+      document.getElementById(steps[steps.length - 1]).style.display = 'block';
       //#endregion
       
-      function manageNextStep(nextStepName) {
-        document.getElementsByName(steps[steps.length - 1])[0].style.display = 'none';
-        steps.push(nextStepName)
+      function manageNextStep(nextStepID) {
+        document.getElementById(steps[steps.length - 1]).style.display = 'none';
+        steps.push(nextStepID)
         localStorage.setItem('steps', JSON.stringify(steps));
-        document.getElementsByName(steps[steps.length - 1])[0].style.display = 'block';
+        document.getElementById(steps[steps.length - 1]).style.display = 'block';
       }
 
       const totalSteps = document.querySelectorAll('.question-holder').length;
       const footer = document.getElementsByClassName('footer')[0];
-      const footerVisibility = () => { steps[steps.length - 1] === 'pet_name' ? footer.style.display = 'block' : footer.style.display = 'none'; };
+
+      const footerVisibility = () => { steps[steps.length - 1] === '1' ? footer.style.display = 'block' : footer.style.display = 'none'; };
+
+      function updateProgressBar() {
+        const currentStep = steps[steps.length - 1];
+        const progressPercentage = (currentStep / totalSteps) * 100;
+
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+          progressBar.style.width = `${progressPercentage}%`;
+        }
+      }
 
       footerVisibility();
       updateProgressBar();
-      steps[steps.length - 1]
 
       //#region Get/create savedAnswers from/in localStorage
       let savedAnswers = JSON.parse(localStorage.getItem('savedAnswers'));
@@ -553,7 +563,7 @@
       } else {
         // INPUT example
         if (savedAnswers?.pet_name) {
-          document.getElementById('step-1').getElementsByTagName('input')[0].value = savedAnswers.pet_name;
+          document.getElementById('1').getElementsByTagName('input')[0].value = savedAnswers.pet_name;
 
           const pet_name_items = document.getElementsByClassName(pet_name);
           for (let i = 0; i < pet_name_items.length; i++) pet_name_items[i].textContent = savedAnswers.pet_name
@@ -561,7 +571,7 @@
 
         if (savedAnswers?.mealplan_goal) {
           savedAnswers.mealplan_goal.forEach(meal => {
-            const foundBtn = Array.from(document.getElementById('step-3').getElementsByClassName('goal-option')).filter(btn => btn.textContent === meal)
+            const foundBtn = Array.from(document.getElementById('3').getElementsByClassName('goal-option')).filter(btn => btn.textContent === meal)
             foundBtn[0].classList.add('selected');
           });
 
@@ -570,7 +580,7 @@
         }
 
         if (savedAnswers?.species) {
-          const btns = Array.from(document.getElementById('step-5').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('5').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.getElementsByTagName('p')[0].textContent === savedAnswers.species) {
               btn.classList.add('selected');
@@ -579,11 +589,11 @@
         }
 
         if (savedAnswers?.breed) {
-          document.getElementById('step-6').getElementsByClassName('goal-option')[0].value = savedAnswers.breed;
+          document.getElementById('6').getElementsByClassName('goal-option')[0].value = savedAnswers.breed;
         }
 
         if (savedAnswers?.gender) {
-          const btns = Array.from(document.getElementById('step-8').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('8').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.gender) {
               btn.classList.add('selected');
@@ -592,7 +602,7 @@
         }
 
         if (savedAnswers?.female_castration) {
-          const btns = Array.from(document.getElementById('step-9').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('9').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.female_castration) {
               btn.classList.add('selected');
@@ -601,7 +611,7 @@
         }
 
         if (savedAnswers?.male_castration) {
-          const btns = Array.from(document.getElementById('step-10').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('10').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.male_castration) {
               btn.classList.add('selected');
@@ -611,22 +621,22 @@
 
         // single INPUT example
         if (savedAnswers?.due_date) {
-          const inp = Array.from(document.getElementById('step-11').getElementsByClassName('goal-option'))[0];
+          const inp = Array.from(document.getElementById('11').getElementsByClassName('goal-option'))[0];
           inp.value = savedAnswers.due_date;
         }
 
         if (savedAnswers?.number_of_babies) {
-          const inp = Array.from(document.getElementById('step-12').getElementsByClassName('goal-option'))[0];
+          const inp = Array.from(document.getElementById('12').getElementsByClassName('goal-option'))[0];
           inp.value = savedAnswers.number_of_babies;
         }
 
         if (savedAnswers?.babies_dob) {
-          const inp = Array.from(document.getElementById('step-12').getElementsByClassName('goal-option'))[1];
+          const inp = Array.from(document.getElementById('12').getElementsByClassName('goal-option'))[1];
           inp.value = savedAnswers.babies_dob;
         }
 
         if (savedAnswers?.ferret_age) {
-          const btns = Array.from(document.getElementById('step-13').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('13').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.ferret_age) {
               btn.classList.add('selected');
@@ -635,7 +645,7 @@
         }
 
         if (savedAnswers?.cat_age) {
-          const btns = Array.from(document.getElementById('step-14').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('14').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.cat_age) {
               btn.classList.add('selected');
@@ -644,7 +654,7 @@
         }
 
         if (savedAnswers?.dog_age) {
-          const btns = Array.from(document.getElementById('step-15').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('15').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.dog_age) {
               btn.classList.add('selected');
@@ -653,7 +663,7 @@
         }
 
         if (savedAnswers?.housing) {
-          const btns = Array.from(document.getElementById('step-16').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('16').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.housing) {
               btn.classList.add('selected');
@@ -662,7 +672,7 @@
         }
 
         if (savedAnswers?.ferret_activity) {
-          const btns = Array.from(document.getElementById('step-17').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('17').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.ferret_activity) {
               btn.classList.add('selected');
@@ -671,7 +681,7 @@
         }
 
         if (savedAnswers?.cat_activity) {
-          const btns = Array.from(document.getElementById('step-18').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('18').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.cat_activity) {
               btn.classList.add('selected');
@@ -680,7 +690,7 @@
         }
 
         if (savedAnswers?.dog_activity) {
-          const btns = Array.from(document.getElementById('step-19').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('19').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.dog_activity) {
               btn.classList.add('selected');
@@ -689,7 +699,7 @@
         }
 
         if (savedAnswers?.ferret_body_condition) {
-          const btns = Array.from(document.getElementById('step-20').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('20').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.ferret_body_condition) {
               btn.classList.add('selected');
@@ -698,7 +708,7 @@
         }
 
         if (savedAnswers?.cat_body_condition) {
-          const btns = Array.from(document.getElementById('step-21').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('21').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.cat_body_condition) {
               btn.classList.add('selected');
@@ -707,7 +717,7 @@
         }
 
         if (savedAnswers?.dog_body_condition) {
-          const btns = Array.from(document.getElementById('step-22').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('22').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.dog_body_condition) {
               btn.classList.add('selected');
@@ -717,14 +727,14 @@
 
         if (savedAnswers?.current_weight) {
           const { weight, type } = savedAnswers.current_weight;
-          const step23 = document.getElementById('step-23');
+          const step23 = document.getElementById('23');
           step23.getElementsByTagName('input')[0].value = weight;
           step23.getElementsByClassName('toggle-button')[0].textContent = type;
         }
 
         // SINGLECHOICE example
         if (savedAnswers?.health_condition) {
-          const btns = Array.from(document.getElementById('step-24').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('24').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.health_condition) {
               btn.classList.add('selected');
@@ -734,7 +744,7 @@
 
         // MULTICHOICE example
         if (savedAnswers?.health_condition_checkbox) {
-          const btns = Array.from(document.getElementById('step-26').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('26').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (savedAnswers.health_condition_checkbox.includes(btn.textContent)) {
               btn.classList.add('selected');
@@ -744,12 +754,12 @@
 
         // TEXTAREA example
         if (savedAnswers?.health_condition_text) {
-          document.getElementById('step-27').getElementsByTagName('textarea')[0].value = savedAnswers.health_condition_text;
+          document.getElementById('27').getElementsByTagName('textarea')[0].value = savedAnswers.health_condition_text;
         }
 
         // UPLOAD FILE example
         if (savedAnswers?.bloodwork_file_upload) {
-          const fileList = document.getElementById('step-28').querySelector('.file-list');
+          const fileList = document.getElementById('28').querySelector('.file-list');
           savedAnswers.bloodwork_file_upload.forEach(file => {
             const fileItem = document.createElement('div');
             fileItem.className = 'file-item';
@@ -772,7 +782,7 @@
         }
 
         if (savedAnswers?.pills) {
-          const btns = Array.from(document.getElementById('step-29').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('29').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.pills) {
               btn.classList.add('selected');
@@ -781,11 +791,11 @@
         }
 
         if (savedAnswers?.pills_text) {
-          document.getElementById('step-30').getElementsByTagName('textarea')[0].value = savedAnswers.pills_text;
+          document.getElementById('30').getElementsByTagName('textarea')[0].value = savedAnswers.pills_text;
         }
 
         if (savedAnswers?.health_issues_checkbox_1) {
-          const btns = Array.from(document.getElementById('step-31').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('31').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (savedAnswers.health_issues_checkbox_1.includes(btn.textContent)) {
               btn.classList.add('selected');
@@ -794,11 +804,11 @@
         }
 
         if (savedAnswers?.health_issues_text) {
-          document.getElementById('step-32').getElementsByTagName('textarea')[0].value = savedAnswers.health_issues_text;
+          document.getElementById('32').getElementsByTagName('textarea')[0].value = savedAnswers.health_issues_text;
         }
 
         if (savedAnswers?.behavior_change_checkbox) {
-          const btns = Array.from(document.getElementById('step-33').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('33').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (savedAnswers.behavior_change_checkbox.includes(btn.textContent)) {
               btn.classList.add('selected');
@@ -807,11 +817,11 @@
         }
 
         if (savedAnswers?.behavior_change_text) {
-          document.getElementById('step-34').getElementsByTagName('textarea')[0].value = savedAnswers.behavior_change_text;
+          document.getElementById('34').getElementsByTagName('textarea')[0].value = savedAnswers.behavior_change_text;
         }
 
         if (savedAnswers?.food_allergies) {
-          const btns = Array.from(document.getElementById('step-35').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('35').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.food_allergies) {
               btn.classList.add('selected');
@@ -820,11 +830,11 @@
         }
 
         if (savedAnswers?.allergies_text) {
-          document.getElementById('step-36').getElementsByTagName('textarea')[0].value = savedAnswers.allergies_text;
+          document.getElementById('36').getElementsByTagName('textarea')[0].value = savedAnswers.allergies_text;
         }
 
         if (savedAnswers?.allergy_symptoms) {
-          const btns = Array.from(document.getElementById('step-37').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('37').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (savedAnswers.allergy_symptoms.includes(btn.textContent)) {
               btn.classList.add('selected');
@@ -833,17 +843,17 @@
         }
 
         if (savedAnswers?.symptomes_text) {
-          document.getElementById('step-38').getElementsByTagName('textarea')[0].value = savedAnswers.symptomes_text;
+          document.getElementById('38').getElementsByTagName('textarea')[0].value = savedAnswers.symptomes_text;
         }
 
         if (savedAnswers?.contact_info) {
-          const step39 = document.getElementById('step-39');
+          const step39 = document.getElementById('39');
           step39.getElementsByTagName('input')[0].value = savedAnswers.contact_info.email;
           step39.getElementsByTagName('input')[1].value = savedAnswers.contact_info.name;
         }
 
         if (savedAnswers?.peaky_eater) {
-          const btns = Array.from(document.getElementById('step-40').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('40').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.peaky_eater) {
               btn.classList.add('selected');
@@ -852,7 +862,7 @@
         }
 
         if (savedAnswers?.current_food) {
-          const btns = Array.from(document.getElementById('step-41').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('41').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.current_food) {
               btn.classList.add('selected');
@@ -861,15 +871,15 @@
         }
 
         if (savedAnswers?.food_brand) {
-          document.getElementById('step-42').getElementsByTagName('textarea')[0].value = savedAnswers.food_brand;
+          document.getElementById('42').getElementsByTagName('textarea')[0].value = savedAnswers.food_brand;
         }
 
         if (savedAnswers?.homemade_food) {
-          document.getElementById('step-43').getElementsByTagName('textarea')[0].value = savedAnswers.homemade_food;
+          document.getElementById('43').getElementsByTagName('textarea')[0].value = savedAnswers.homemade_food;
         }
 
         if (savedAnswers?.food_likes) {
-          const btns = Array.from(document.getElementById('step-44').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('44').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (savedAnswers.food_likes.includes(btn.textContent)) {
               btn.classList.add('selected');
@@ -878,11 +888,11 @@
         }
 
         if (savedAnswers?.additional_likes) {
-          document.getElementById('step-45').getElementsByTagName('textarea')[0].value = savedAnswers.additional_likes;
+          document.getElementById('45').getElementsByTagName('textarea')[0].value = savedAnswers.additional_likes;
         }
 
         if (savedAnswers?.doesnt_likes) {
-          const btns = Array.from(document.getElementById('step-46').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('46').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (savedAnswers.doesnt_likes.includes(btn.textContent)) {
               btn.classList.add('selected');
@@ -891,15 +901,15 @@
         }
 
         if (savedAnswers?.doesnt_likes_other) {
-          document.getElementById('step-47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
+          document.getElementById('47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
         }
 
         if (savedAnswers?.doesnt_likes_other) {
-          document.getElementById('step-47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
+          document.getElementById('47').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other;
         }
 
         if (savedAnswers?.rewards) {
-          const btns = Array.from(document.getElementById('step-48').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('48').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.rewards) {
               btn.classList.add('selected');
@@ -908,11 +918,11 @@
         }
 
         if (savedAnswers?.rewards_text) {
-          document.getElementById('step-49').getElementsByTagName('textarea')[0].value = savedAnswers.rewards_text;
+          document.getElementById('49').getElementsByTagName('textarea')[0].value = savedAnswers.rewards_text;
         }
 
         if (savedAnswers?.food_access) {
-          const btns = Array.from(document.getElementById('step-50').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('50').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.food_access) {
               btn.classList.add('selected');
@@ -921,11 +931,11 @@
         }
 
         if (savedAnswers?.doesnt_likes_other_2) {
-          document.getElementById('step-51').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other_2;
+          document.getElementById('51').getElementsByTagName('textarea')[0].value = savedAnswers.doesnt_likes_other_2;
         }
 
         if (savedAnswers?.other_pets) {
-          const btns = Array.from(document.getElementById('step-52').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('52').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.other_pets) {
               btn.classList.add('selected');
@@ -934,7 +944,7 @@
         }
 
         if (savedAnswers?.food_tracking) {
-          const btns = Array.from(document.getElementById('step-53').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('53').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.food_tracking) {
               btn.classList.add('selected');
@@ -943,7 +953,7 @@
         }
 
         if (savedAnswers?.begging) {
-          const btns = Array.from(document.getElementById('step-54').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('54').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.begging) {
               btn.classList.add('selected');
@@ -952,11 +962,11 @@
         }
 
         if (savedAnswers?.begging_text) {
-          document.getElementById('step-55').getElementsByTagName('textarea')[0].value = savedAnswers.begging_text;
+          document.getElementById('55').getElementsByTagName('textarea')[0].value = savedAnswers.begging_text;
         }
 
         if (savedAnswers?.people_feeding) {
-          const btns = Array.from(document.getElementById('step-56').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('56').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.people_feeding) {
               btn.classList.add('selected');
@@ -965,7 +975,7 @@
         }
 
         if (savedAnswers?.share) {
-          const btns = Array.from(document.getElementById('step-58').getElementsByClassName('goal-option'));
+          const btns = Array.from(document.getElementById('58').getElementsByClassName('goal-option'));
           btns.forEach(btn => {
             if (btn.textContent === savedAnswers.share) {
               btn.classList.add('selected');
@@ -975,11 +985,11 @@
 
         // TEXTAREA example
         if (savedAnswers?.share_textbox) {
-          document.getElementById('step-59').getElementsByTagName('textarea')[0].value = savedAnswers.share_textbox;
+          document.getElementById('59').getElementsByTagName('textarea')[0].value = savedAnswers.share_textbox;
         }
 
         if (savedAnswers?.partialSavedInfo) {
-          const items = Array.from(document.getElementById('step-61').getElementsByClassName('saved-info'));
+          const items = Array.from(document.getElementById('61').getElementsByClassName('saved-info'));
           items.forEach((item, index) => {
             item.textContent = savedAnswers.partialSavedInfo[index] || '';
           });
@@ -996,10 +1006,10 @@
       const prevQuestionBtn = document.getElementsByClassName('back-arrow')[0];
       prevQuestionBtn.addEventListener('click', () => {
         if (steps.length > 1) {
-          document.getElementsByName(steps[steps.length - 1])[0].style.display = 'none';
+          document.getElementById(steps[steps.length - 1]).style.display = 'none';
           steps.pop();
           localStorage.setItem('steps', JSON.stringify(steps));
-          document.getElementsByName(steps[steps.length - 1])[0].style.display = 'block';
+          document.getElementById(steps[steps.length - 1]).style.display = 'block';
         }
      
         footerVisibility();
@@ -1007,19 +1017,8 @@
       })
       //#endregion
 
-      function updateProgressBar() {
-        // ZAK tyk 6te ima bug kato se stigne na posledna stupka - nqma da e pulen progress bara
-        const currentStep = steps.length;
-        const progressPercentage = (currentStep / totalSteps) * 100;
-
-        const progressBar = document.querySelector('.progress-bar');
-        if (progressBar) {
-          progressBar.style.width = `${progressPercentage}%`;
-        }
-      }
-
-      //#region step-1 pet_name INPUT example
-      const step1 = document.getElementById('step-1');
+      //#region 1 pet_name INPUT example
+      const step1 = document.getElementById('1');
       const step1inp = step1.getElementsByTagName('input')[0];
 
       step1inp.name = pet_name;
@@ -1039,7 +1038,7 @@
 
           for (let i = 0; i < pet_name_items.length; i++) pet_name_items[i].textContent = value
 
-          manageNextStep('thank_you_pawsome');
+          manageNextStep(2);
         }
 
         footerVisibility();
@@ -1047,17 +1046,17 @@
       })
       //#endregion
 
-      //#region step-2 thank_you_pawsomeonly SHOW TEXT
-      const step2 = document.getElementById('step-2');
+      //#region 2 thank_you_pawsome only SHOW TEXT
+      const step2 = document.getElementById('2');
       step2.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('mealplan_goal');
+        manageNextStep(3);
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-3 mealplan_goal
-      const step3 = document.getElementById('step-3');
+      //#region 3 mealplan_goal
+      const step3 = document.getElementById('3');
       step3.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step3.getElementsByClassName('goal-option'))
           .filter(btn => btn.classList.contains('selected'))
@@ -1071,24 +1070,24 @@
         savedAnswers.mealplan_goal = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        manageNextStep('the_solution_is_here');
+        manageNextStep(4);
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-4 the_solution_is_here
-      const step4 = document.getElementById('step-4');
+      //#region 4 the_solution_is_here
+      const step4 = document.getElementById('4');
       step4.getElementsByClassName('next-button')[0].addEventListener('click', function () {
 
-        manageNextStep('species');
+        manageNextStep(5);
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-5 species
-      const step5 = document.getElementById('step-5');
+      //#region 5 species
+      const step5 = document.getElementById('5');
       const step5singleChoiceBtns = step5.getElementsByTagName('button');
 
       for (let i = 0; i < step5singleChoiceBtns.length; i++) {
@@ -1114,8 +1113,8 @@
           clearAllSelected(step5singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'ferret') manageNextStep('kiss_ferret');
-          if (selectedItem === 'cat' || selectedItem === 'dog') manageNextStep('breed');
+          if (selectedItem === 'cat' || selectedItem === 'dog') manageNextStep(6);
+          if (selectedItem === 'ferret') manageNextStep(7);
 
           footerVisibility();
           updateProgressBar();
@@ -1123,8 +1122,8 @@
       }
       //#endregion
 
-      //#region step-6 breed
-      const step6 = document.getElementById('step-6');
+      //#region 6 breed
+      const step6 = document.getElementById('6');
       const step6inp = step6.getElementsByTagName('input')[0];
 
       step6inp.addEventListener('input', function () {
@@ -1138,26 +1137,26 @@
         if (value.length > 0) {
           savedAnswers.breed = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-          manageNextStep('gender');
+          manageNextStep(8);
+          footerVisibility();
+          updateProgressBar();
         }
 
-        footerVisibility();
-        updateProgressBar();
       })
       //#endregion
 
-      //#region step-7 kiss_ferret
-      const step7 = document.getElementById('step-7');
+      //#region 7 kiss_ferret
+      const step7 = document.getElementById('7');
       step7.getElementsByClassName('pet_name')[0].textContent = savedAnswers.pet_name;
       step7.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('gender');
+        manageNextStep(8);
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-8 gender 
-      const step8 = document.getElementById('step-8');
+      //#region 8 gender 
+      const step8 = document.getElementById('8');
       const step8singleChoiceBtns = step8.getElementsByTagName('button');
 
       for (let i = 0; i < step8singleChoiceBtns.length; i++) {
@@ -1170,8 +1169,8 @@
           clearAllSelected(step8singleChoiceBtns)
           this.classList.add('selected')
 
-          if (textContent === 'a lady') manageNextStep('female_castration');
-          if (textContent === 'a gentleman') manageNextStep('male_castration');
+          if (textContent === 'a lady') manageNextStep(9);
+          if (textContent === 'a gentleman') manageNextStep(10);
           
           footerVisibility();
           updateProgressBar();
@@ -1179,8 +1178,8 @@
       }
       //#endregion
 
-      //#region step-9 female_castration 
-      const step9 = document.getElementById('step-9');
+      //#region 9 female_castration 
+      const step9 = document.getElementById('9');
       const step9singleChoiceBtns = step9.getElementsByTagName('button');
 
       for (let i = 0; i < step9singleChoiceBtns.length; i++) {
@@ -1193,11 +1192,11 @@
           clearAllSelected(step9singleChoiceBtns)
           this.classList.add('selected')
 
-          if (savedAnswers?.species === 'ferret' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep('ferret_age');
-          if (savedAnswers?.species === 'cat' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep('cat_age');
-          if (savedAnswers?.species === 'dog' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep('dog_age');
-          if (savedAnswers?.female_castration === "pregnant") manageNextStep('due_date');
-          if (savedAnswers?.female_castration === "nursing") manageNextStep('numer_of_babies');
+          if (savedAnswers?.species === 'ferret' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep(13);
+          if (savedAnswers?.species === 'cat' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep(14);
+          if (savedAnswers?.species === 'dog' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep(15);
+          if (savedAnswers?.female_castration === "pregnant") manageNextStep(11);
+          if (savedAnswers?.female_castration === "nursing") manageNextStep(12);
 
           footerVisibility();
           updateProgressBar();
@@ -1205,8 +1204,8 @@
       }
       //#endregion
 
-      //#region step-10 male_castration
-      const step10 = document.getElementById('step-10');
+      //#region 10 male_castration
+      const step10 = document.getElementById('10');
       const step10singleChoiceBtns = step10.getElementsByTagName('button');
 
       for (let i = 0; i < step10singleChoiceBtns.length; i++) {
@@ -1219,9 +1218,9 @@
           clearAllSelected(step10singleChoiceBtns)
           this.classList.add('selected')
 
-          if (savedAnswers?.species === 'ferret') manageNextStep('ferret_age');
-          if (savedAnswers?.species === 'cat') manageNextStep('cat_age');
-          if (savedAnswers?.species === 'dog') manageNextStep('dog_age');
+          if (savedAnswers?.species === 'ferret') manageNextStep(13);
+          if (savedAnswers?.species === 'cat') manageNextStep(14);
+          if (savedAnswers?.species === 'dog') manageNextStep(15);
 
           footerVisibility();
           updateProgressBar();
@@ -1229,8 +1228,8 @@
       }
       //#endregion
 
-      //#region step-11 due_date
-      const step11 = document.getElementById('step-11');
+      //#region 11 due_date
+      const step11 = document.getElementById('11');
       const step11inp = step11.getElementsByTagName('input')[0];
 
       // step11inp.addEventListener('input', function () {
@@ -1248,17 +1247,17 @@
         savedAnswers.due_date = inpVal;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers?.species === "ferret") manageNextStep('ferret_age');
-        if (savedAnswers?.species === "cat") manageNextStep('cat_age');
-        if (savedAnswers?.species === "dog") manageNextStep('dog_age');
+        if (savedAnswers?.species === "ferret") manageNextStep(13);
+        if (savedAnswers?.species === "cat") manageNextStep(14);
+        if (savedAnswers?.species === "dog") manageNextStep(15);
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-12 numer_of_babies
-      const step12 = document.getElementById('step-12');
+      //#region 12 numer_of_babies
+      const step12 = document.getElementById('12');
       const step12babiesInp = step12.getElementsByClassName('goal-option')[0];
       const step12bornAtInp = step12.getElementsByClassName('goal-option')[1];
 
@@ -1284,17 +1283,17 @@
         savedAnswers.babies_dob = step12bornAtVal;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers?.species === "ferret") manageNextStep('ferret_age');
-        if (savedAnswers?.species === "cat") manageNextStep('cat_age');
-        if (savedAnswers?.species === "dog") manageNextStep('dog_age');
+        if (savedAnswers?.species === "ferret") manageNextStep(13);
+        if (savedAnswers?.species === "cat") manageNextStep(14);
+        if (savedAnswers?.species === "dog") manageNextStep(15);
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-13 ferret_age
-      const step13 = document.getElementById('step-13');
+      //#region 13 ferret_age
+      const step13 = document.getElementById('13');
       const step13singleChoiceBtns = step13.getElementsByTagName('button');
 
       for (let i = 0; i < step13singleChoiceBtns.length; i++) {
@@ -1306,15 +1305,15 @@
           clearAllSelected(step13singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('housing');
+          manageNextStep(16);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-14 cat_age
-      const step14 = document.getElementById('step-14');
+      //#region 14 cat_age
+      const step14 = document.getElementById('14');
       const step14singleChoiceBtns = step14.getElementsByTagName('button');
 
       for (let i = 0; i < step14singleChoiceBtns.length; i++) {
@@ -1326,15 +1325,15 @@
           clearAllSelected(step14singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('housing');
+          manageNextStep(16);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-15 dog_age
-      const step15 = document.getElementById('step-15');
+      //#region 15 dog_age
+      const step15 = document.getElementById('15');
       const step15singleChoiceBtns = step15.getElementsByTagName('button');
 
       for (let i = 0; i < step15singleChoiceBtns.length; i++) {
@@ -1346,15 +1345,15 @@
           clearAllSelected(step15singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('housing');
+          manageNextStep(16);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-16 housing
-      const step16 = document.getElementById('step-16');
+      //#region 16 housing
+      const step16 = document.getElementById('16');
       const step16singleChoiceBtns = step16.getElementsByTagName('button');
 
       for (let i = 0; i < step16singleChoiceBtns.length; i++) {
@@ -1366,9 +1365,9 @@
           clearAllSelected(step16singleChoiceBtns)
           this.classList.add('selected')
 
-          if (savedAnswers.species === 'ferret') manageNextStep('ferret_activity');
-          if (savedAnswers.species === 'cat') manageNextStep('cat_activity');
-          if (savedAnswers.species === 'dog') manageNextStep('dog_activity');
+          if (savedAnswers.species === 'ferret') manageNextStep(17);
+          if (savedAnswers.species === 'cat') manageNextStep(18);
+          if (savedAnswers.species === 'dog') manageNextStep(19);
 
           footerVisibility();
           updateProgressBar();
@@ -1376,8 +1375,8 @@
       }
       //#endregion
 
-      //#region step-17 ferret_activity
-      const step17 = document.getElementById('step-17');
+      //#region 17 ferret_activity
+      const step17 = document.getElementById('17');
       const step17singleChoiceBtns = step17.getElementsByTagName('button');
 
       for (let i = 0; i < step17singleChoiceBtns.length; i++) {
@@ -1389,15 +1388,15 @@
           clearAllSelected(step17singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('ferret_body_condition');
+          manageNextStep(20);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-18 cat_activity
-      const step18 = document.getElementById('step-18');
+      //#region 18 cat_activity
+      const step18 = document.getElementById('18');
       const step18singleChoiceBtns = step18.getElementsByTagName('button');
 
       for (let i = 0; i < step18singleChoiceBtns.length; i++) {
@@ -1409,15 +1408,15 @@
           clearAllSelected(step18singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('cat_body_condition');
+          manageNextStep(21);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-19 dog_activity
-      const step19 = document.getElementById('step-19');
+      //#region 19 dog_activity
+      const step19 = document.getElementById('19');
       const step19singleChoiceBtns = step19.getElementsByTagName('button');
 
       for (let i = 0; i < step19singleChoiceBtns.length; i++) {
@@ -1429,15 +1428,15 @@
           clearAllSelected(step19singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('dog_body_condition');
+          manageNextStep(22);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-20 ferret_body_condition
-      const step20 = document.getElementById('step-20');
+      //#region 20 ferret_body_condition
+      const step20 = document.getElementById('20');
       const step20singleChoiceBtns = step20.getElementsByTagName('button');
 
       for (let i = 0; i < step20singleChoiceBtns.length; i++) {
@@ -1449,15 +1448,15 @@
           clearAllSelected(step20singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_weight');
+          manageNextStep(23);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-21 cat_body_condition
-      const step21 = document.getElementById('step-21');
+      //#region 21 cat_body_condition
+      const step21 = document.getElementById('21');
       const step21singleChoiceBtns = step21.getElementsByTagName('button');
 
       for (let i = 0; i < step21singleChoiceBtns.length; i++) {
@@ -1469,15 +1468,15 @@
           clearAllSelected(step21singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_weight');
+          manageNextStep(23);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-22 dog_body_condition
-      const step22 = document.getElementById('step-22');
+      //#region 22 dog_body_condition
+      const step22 = document.getElementById('22');
       const step22singleChoiceBtns = step22.getElementsByTagName('button');
 
       for (let i = 0; i < step22singleChoiceBtns.length; i++) {
@@ -1489,15 +1488,15 @@
           clearAllSelected(step22singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_weight');
+          manageNextStep(23);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-23 current_weight
-      const step23 = document.getElementById('step-23');
+      //#region 23 current_weight
+      const step23 = document.getElementById('23');
       const step23inp = step23.getElementsByTagName('input')[0];
       const weightToggle = document.getElementById('weight-toggle');
       weightToggle.textContent = '';
@@ -1531,7 +1530,7 @@
           }
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('health_condition');
+          manageNextStep(24);
           footerVisibility();
           updateProgressBar();
         }
@@ -1539,8 +1538,8 @@
       })
       //#endregion
 
-      //#region step-24 health_condition SINGLECHOICE example
-      const step24 = document.getElementById('step-24');
+      //#region 24 health_condition SINGLECHOICE example
+      const step24 = document.getElementById('24');
       const step24singleChoiceBtns = step24.getElementsByTagName('button');
 
       for (let i = 0; i < step24singleChoiceBtns.length; i++) {
@@ -1552,8 +1551,8 @@
           clearAllSelected(step24singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('health_condition_checkbox');
-          if (selectedItem === 'no') manageNextStep('no_health_conditions');
+          if (selectedItem === 'no') manageNextStep(25);
+          if (selectedItem === 'yes') manageNextStep(26);
 
           footerVisibility();
           updateProgressBar();
@@ -1561,21 +1560,21 @@
       }
       //#endregion
 
-      //#region step-25 no_health_conditions
-      const step25 = document.getElementById('step-25');
+      //#region 25 no_health_conditions
+      const step25 = document.getElementById('25');
       const step25singleChoiceBtns = step25.getElementsByTagName('button');
 
       for (let i = 0; i < step25singleChoiceBtns.length; i++) {
         step25singleChoiceBtns[i].addEventListener('click', function () {
-          manageNextStep('pills');
+          manageNextStep(29);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-26 health_condition_checkbox MULTICHOICE example
-      const step26 = document.getElementById('step-26');
+      //#region 26 health_condition_checkbox MULTICHOICE example
+      const step26 = document.getElementById('26');
       step26.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step26.getElementsByClassName('goal-option'))
           .filter(btn => btn.classList.contains('selected'))
@@ -1586,14 +1585,14 @@
         savedAnswers.health_condition_checkbox = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        manageNextStep('health_condition_text');
+        manageNextStep(27);
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-27 health_condition_text TEXTAREA example
-      const step27 = document.getElementById('step-27');
+      //#region 27 health_condition_text TEXTAREA example
+      const step27 = document.getElementById('27');
       const step27inp = step27.getElementsByTagName('textarea')[0];
 
       step27inp.name = health_condition_text;
@@ -1610,7 +1609,7 @@
           savedAnswers.health_condition_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('bloodwork_file_upload');
+          manageNextStep(28);
           footerVisibility();
           updateProgressBar();
         }
@@ -1618,8 +1617,8 @@
       })
       //#endregion
 
-      //#region step-28 bloodwork_file_upload FILE UPLOAD example
-      const step28 = document.getElementById('step-28');
+      //#region 28 bloodwork_file_upload FILE UPLOAD example
+      const step28 = document.getElementById('28');
       const fileUploadContainer = step28.querySelector('.file-upload-container');
       const fileInput = step28.querySelector('input[type="file"]');
       const fileList = step28.querySelector('.file-list');
@@ -1681,7 +1680,7 @@
 
       step28.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         // if (fileList.children.length > 0) {
-        manageNextStep('pills');
+        manageNextStep(29);
         // }
 
         footerVisibility();
@@ -1689,8 +1688,8 @@
       });
       //#endregion
 
-      //#region step-29 pills
-      const step29 = document.getElementById('step-29');
+      //#region 29 pills
+      const step29 = document.getElementById('29');
       const step29singleChoiceBtns = step29.getElementsByTagName('button');
 
       for (let i = 0; i < step29singleChoiceBtns.length; i++) {
@@ -1702,8 +1701,8 @@
           clearAllSelected(step29singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('pills_text');
-          if (selectedItem === 'no') manageNextStep('health_issues_checkbox_1');
+          if (selectedItem === 'yes') manageNextStep(30);
+          if (selectedItem === 'no') manageNextStep(31);
 
           footerVisibility();
           updateProgressBar();
@@ -1711,8 +1710,8 @@
       }
       //#endregion
 
-      //#region step-30 pills_text
-      const step30 = document.getElementById('step-30');
+      //#region 30 pills_text
+      const step30 = document.getElementById('30');
       const step30inp = step30.getElementsByTagName('textarea')[0];
 
       step30inp.name = pills_text;
@@ -1729,7 +1728,7 @@
           savedAnswers.pills_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('health_issues_checkbox_1');
+          manageNextStep(31);
           footerVisibility();
           updateProgressBar();
         }
@@ -1737,8 +1736,8 @@
       })
       //#endregion
 
-      //#region step-31 health_issues_checkbox_1
-      const step31 = document.getElementById('step-31');
+      //#region 31 health_issues_checkbox_1
+      const step31 = document.getElementById('31');
       step31.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step31.getElementsByClassName('goal-option'))
           .filter(btn => btn.classList.contains('selected'))
@@ -1749,16 +1748,16 @@
         savedAnswers.health_issues_checkbox_1 = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers.health_issues_checkbox_1[0] !== 'no, all is good') manageNextStep('health_condition_text_1');
-        if (savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') manageNextStep('behavior_change_checkbox');
+        if (savedAnswers.health_issues_checkbox_1[0] !== 'no, all is good') manageNextStep(32);
+        if (savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') manageNextStep(33);
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-32 health_condition_text
-      const step32 = document.getElementById('step-32');
+      //#region 32 health_condition_text_1
+      const step32 = document.getElementById('32');
       const step32inp = step32.getElementsByTagName('textarea')[0];
 
       step32inp.name = health_issues_text;
@@ -1775,7 +1774,7 @@
           savedAnswers.health_issues_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('behavior_change_checkbox');
+          manageNextStep(33);
           footerVisibility();
           updateProgressBar();
         }
@@ -1783,8 +1782,8 @@
       })
       //#endregion
 
-      //#region step-33 behavior_change_checkbox
-      const step33 = document.getElementById('step-33');
+      //#region 33 behavior_change_checkbox
+      const step33 = document.getElementById('33');
       step33.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step33.getElementsByClassName('goal-option'))
           .filter(btn => btn.classList.contains('selected'))
@@ -1795,16 +1794,16 @@
         savedAnswers.behavior_change_checkbox = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions[0] !== 'no, all is good') manageNextStep('behavior_change_text');
-        if (selectedOptions[0] === 'no, all is good') manageNextStep('food_allergies');
+        if (selectedOptions[0] !== 'no, all is good') manageNextStep(34);
+        if (selectedOptions[0] === 'no, all is good') manageNextStep(35);
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-34 behavior_change_text
-      const step34 = document.getElementById('step-34');
+      //#region 34 behavior_change_text
+      const step34 = document.getElementById('34');
       const step34inp = step34.getElementsByTagName('textarea')[0];
 
       step34inp.name = behavior_change_text;
@@ -1821,7 +1820,7 @@
           savedAnswers.behavior_change_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
           
-          manageNextStep('food_allergies');
+          manageNextStep(35);
           footerVisibility();
           updateProgressBar();
         }
@@ -1829,8 +1828,8 @@
       })
       //#endregion
 
-      //#region step-35 food_allergies
-      const step35 = document.getElementById('step-35');
+      //#region 35 food_allergies
+      const step35 = document.getElementById('35');
       const step35singleChoiceBtns = step35.getElementsByTagName('button');
 
       for (let i = 0; i < step35singleChoiceBtns.length; i++) {
@@ -1842,8 +1841,8 @@
           clearAllSelected(step35singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('health_condition_text_2');
-          if (selectedItem === 'no') manageNextStep('contact_info');
+          if (selectedItem === 'yes') manageNextStep(36);
+          if (selectedItem === 'no') manageNextStep(39);
           
           footerVisibility();
           updateProgressBar();
@@ -1851,8 +1850,8 @@
       }
       //#endregion
 
-      //#region step-36 health_condition_text
-      const step36 = document.getElementById('step-36');
+      //#region 36 health_condition_text_2
+      const step36 = document.getElementById('36');
       const step36inp = step36.getElementsByTagName('textarea')[0];
 
       step36inp.name = allergies_text;
@@ -1869,7 +1868,7 @@
           savedAnswers.allergies_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('allergy_symptoms');
+          manageNextStep(37);
           footerVisibility();
           updateProgressBar();
         }
@@ -1877,8 +1876,8 @@
       })
       //#endregion
 
-      //#region step-37 allergy_symptoms
-      const step37 = document.getElementById('step-37');
+      //#region 37 allergy_symptoms
+      const step37 = document.getElementById('37');
       step37.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step37.getElementsByClassName('goal-option'))
           .filter(btn => btn.classList.contains('selected'))
@@ -1889,16 +1888,16 @@
         savedAnswers.allergy_symptoms = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions[0] === 'other') manageNextStep('symptomes_text');
-        if (selectedOptions[0] !== 'other') manageNextStep('contact_info');
+        if (selectedOptions[0] === 'other') manageNextStep(38);
+        if (selectedOptions[0] !== 'other') manageNextStep(39);
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-38 symptomes_text
-      const step38 = document.getElementById('step-38');
+      //#region 38 symptomes_text
+      const step38 = document.getElementById('38');
       const step38inp = step38.getElementsByTagName('textarea')[0];
 
       step38inp.name = symptomes_text;
@@ -1915,7 +1914,7 @@
           savedAnswers.symptomes_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('contact_info');
+          manageNextStep(39);
           footerVisibility();
           updateProgressBar();
         }
@@ -1923,8 +1922,8 @@
       })
       //#endregion
 
-      //#region step-39 contact_info
-      const step39 = document.getElementById('step-39');
+      //#region 39 contact_info
+      const step39 = document.getElementById('39');
       const emailInput = step39.querySelector('input[type="email"]');
       const nameInput = step39.querySelector('input[type="text"]');
       const nextButton = step39.querySelector('.next-button');
@@ -2008,7 +2007,7 @@
           savedAnswers.contact_info = { email, name };
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('peaky_eater');
+          manageNextStep(40);
           footerVisibility();
           updateProgressBar();
         }
@@ -2016,8 +2015,8 @@
       });
       //#endregion
 
-      //#region step-40 peaky_eater
-      const step40 = document.getElementById('step-40');
+      //#region 40 peaky_eater
+      const step40 = document.getElementById('40');
       const step40singleChoiceBtns = step40.getElementsByTagName('button');
 
       for (let i = 0; i < step40singleChoiceBtns.length; i++) {
@@ -2029,15 +2028,15 @@
           clearAllSelected(step40singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_food');
+          manageNextStep(41);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-41 current_food
-      const step41 = document.getElementById('step-41');
+      //#region 41 current_food
+      const step41 = document.getElementById('41');
       const step41singleChoiceBtns = step41.getElementsByTagName('button');
 
       for (let i = 0; i < step41singleChoiceBtns.length; i++) {
@@ -2049,8 +2048,8 @@
           clearAllSelected(step41singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem !== 'homemade food') manageNextStep('food_brand');
-          if (selectedItem === 'homemade food') manageNextStep('homemade_food');
+          if (selectedItem !== 'homemade food') manageNextStep(42);
+          if (selectedItem === 'homemade food') manageNextStep(43);
 
           footerVisibility();
           updateProgressBar();
@@ -2058,8 +2057,8 @@
       }
       //#endregion
 
-      //#region step-42 food_brand
-      const step42 = document.getElementById('step-42');
+      //#region 42 food_brand
+      const step42 = document.getElementById('42');
       const step42inp = step42.getElementsByTagName('textarea')[0];
 
       step42inp.name = food_brand;
@@ -2076,7 +2075,7 @@
           savedAnswers.food_brand = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('food_likes');
+          manageNextStep(44);
           footerVisibility();
           updateProgressBar();
         }
@@ -2084,8 +2083,8 @@
       })
       //#endregion
 
-      //#region step-43 homemade_food
-      const step43 = document.getElementById('step-43');
+      //#region 43 homemade_food
+      const step43 = document.getElementById('43');
       const step43inp = step43.getElementsByTagName('textarea')[0];
 
       step43inp.name = homemade_food;
@@ -2102,7 +2101,7 @@
           savedAnswers.homemade_food = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('food_likes');
+          manageNextStep(44);
           footerVisibility();
           updateProgressBar();
         }
@@ -2110,8 +2109,8 @@
       })
       //#endregion
 
-      //#region step-44 food_likes
-      const step44 = document.getElementById('step-44');
+      //#region 44 food_likes
+      const step44 = document.getElementById('44');
       step44.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step44.getElementsByClassName('goal-option'))
           .filter(btn => btn.classList.contains('selected'))
@@ -2122,16 +2121,16 @@
         savedAnswers.food_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions[0] === 'other') manageNextStep('additional_likes');
-        if (selectedOptions[0] !== 'other') manageNextStep('doesnt_likes');
+        if (selectedOptions[0] === 'other') manageNextStep(45);
+        if (selectedOptions[0] !== 'other') manageNextStep(46);
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-45 additional_likes
-      const step45 = document.getElementById('step-45');
+      //#region 45 additional_likes
+      const step45 = document.getElementById('45');
       const step45inp = step45.getElementsByTagName('textarea')[0];
 
       step45inp.name = additional_likes;
@@ -2148,7 +2147,7 @@
           savedAnswers.additional_likes = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('doesnt_likes');
+          manageNextStep(46);
           footerVisibility();
           updateProgressBar();
         }
@@ -2156,8 +2155,8 @@
       })
       //#endregion
 
-      //#region step-46 doesnt_likes
-      const step46 = document.getElementById('step-46');
+      //#region 46 doesnt_likes
+      const step46 = document.getElementById('46');
       step46.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step46.getElementsByClassName('goal-option'))
           .filter(btn => btn.classList.contains('selected'))
@@ -2168,16 +2167,16 @@
         savedAnswers.doesnt_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions[0] === 'other') manageNextStep('doesnt_likes_other');
-        if (selectedOptions[0] !== 'other') manageNextStep('rewards');
+        if (selectedOptions[0] === 'other') manageNextStep(47);
+        if (selectedOptions[0] !== 'other') manageNextStep(48);
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-47 doesnt_likes_other
-      const step47 = document.getElementById('step-47');
+      //#region 47 doesnt_likes_other
+      const step47 = document.getElementById('47');
       const step47inp = step47.getElementsByTagName('textarea')[0];
 
       step47inp.name = doesnt_likes_other;
@@ -2194,7 +2193,7 @@
           savedAnswers.doesnt_likes_other = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('rewards');
+          manageNextStep(48);
           footerVisibility();
           updateProgressBar();
         }
@@ -2202,8 +2201,8 @@
       })
       //#endregion
 
-      //#region step-48 rewards
-      const step48 = document.getElementById('step-48');
+      //#region 48 rewards
+      const step48 = document.getElementById('48');
       const step48singleChoiceBtns = step48.getElementsByTagName('button');
 
       for (let i = 0; i < step48singleChoiceBtns.length; i++) {
@@ -2215,8 +2214,8 @@
           clearAllSelected(step48singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('rewards_text');
-          if (selectedItem === 'no') manageNextStep('food_access');
+          if (selectedItem === 'yes') manageNextStep(49);
+          if (selectedItem === 'no') manageNextStep(50);
 
           footerVisibility();
           updateProgressBar();
@@ -2224,8 +2223,8 @@
       }
       //#endregion
 
-      //#region step-49 rewards_text
-      const step49 = document.getElementById('step-49');
+      //#region 49 rewards_text
+      const step49 = document.getElementById('49');
       const step49inp = step49.getElementsByTagName('textarea')[0];
 
       step49inp.name = rewards_text;
@@ -2242,7 +2241,7 @@
           savedAnswers.rewards_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('food_access');
+          manageNextStep(50);
           footerVisibility();
           updateProgressBar();
         }
@@ -2250,8 +2249,8 @@
       })
       //#endregion
 
-      //#region step-50 food_access
-      const step50 = document.getElementById('step-50');
+      //#region 50 food_access
+      const step50 = document.getElementById('50');
       const step50singleChoiceBtns = step50.getElementsByTagName('button');
 
       for (let i = 0; i < step50singleChoiceBtns.length; i++) {
@@ -2263,8 +2262,8 @@
           clearAllSelected(step50singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'other') manageNextStep('doesnt_likes_other_2');
-          if (selectedItem !== 'other') manageNextStep('other_pets');
+          if (selectedItem === 'other') manageNextStep(51);
+          if (selectedItem !== 'other') manageNextStep(52);
 
           footerVisibility();
           updateProgressBar();
@@ -2272,8 +2271,8 @@
       }
       //#endregion
 
-      //#region step-51 doesnt_likes_other_2
-      const step51 = document.getElementById('step-51');
+      //#region 51 doesnt_likes_other_2
+      const step51 = document.getElementById('51');
       const step51inp = step51.getElementsByTagName('textarea')[0];
 
       step51inp.name = doesnt_likes_other_2;
@@ -2290,7 +2289,7 @@
           savedAnswers.doesnt_likes_other_2 = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('other_pets');
+          manageNextStep(52);
           footerVisibility();
           updateProgressBar();
         }
@@ -2298,8 +2297,8 @@
       })
       //#endregion
 
-      //#region step-52 other_pets
-      const step52 = document.getElementById('step-52');
+      //#region 52 other_pets
+      const step52 = document.getElementById('52');
       const step52singleChoiceBtns = step52.getElementsByTagName('button');
 
       for (let i = 0; i < step52singleChoiceBtns.length; i++) {
@@ -2311,15 +2310,15 @@
           clearAllSelected(step52singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('food_tracking');
+          manageNextStep(53);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-53 food_tracking
-      const step53 = document.getElementById('step-53');
+      //#region 53 food_tracking
+      const step53 = document.getElementById('53');
       const step53singleChoiceBtns = step53.getElementsByTagName('button');
 
       for (let i = 0; i < step53singleChoiceBtns.length; i++) {
@@ -2331,15 +2330,15 @@
           clearAllSelected(step53singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('begging');
+          manageNextStep(54);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-54 begging
-      const step54 = document.getElementById('step-54');
+      //#region 54 begging
+      const step54 = document.getElementById('54');
       const step54singleChoiceBtns = step54.getElementsByTagName('button');
 
       for (let i = 0; i < step54singleChoiceBtns.length; i++) {
@@ -2351,8 +2350,8 @@
           clearAllSelected(step54singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'sometimes, for certain foods only') manageNextStep('begging_text');
-          if (selectedItem !== 'sometimes, for certain foods only') manageNextStep('people_feeding');
+          if (selectedItem === 'sometimes, for certain foods only') manageNextStep(55);
+          if (selectedItem !== 'sometimes, for certain foods only') manageNextStep(56);
 
           footerVisibility();
           updateProgressBar();
@@ -2360,8 +2359,8 @@
       }
       //#endregion
 
-      //#region step-55 begging_text
-      const step55 = document.getElementById('step-55');
+      //#region 55 begging_text
+      const step55 = document.getElementById('55');
       const step55inp = step55.getElementsByTagName('textarea')[0];
 
       step55inp.name = begging_text;
@@ -2378,7 +2377,7 @@
           savedAnswers.begging_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('people_feeding');
+          manageNextStep(56);
           footerVisibility();
           updateProgressBar();
         }
@@ -2386,8 +2385,8 @@
       })
       //#endregion
 
-      //#region step-56 people_feeding
-      const step56 = document.getElementById('step-56');
+      //#region 56 people_feeding
+      const step56 = document.getElementById('56');
       const step56singleChoiceBtns = step56.getElementsByTagName('button');
 
       for (let i = 0; i < step56singleChoiceBtns.length; i++) {
@@ -2399,24 +2398,24 @@
           clearAllSelected(step56singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('almost_ready');
+          manageNextStep(57);
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-57 almost_ready
-      const step57 = document.getElementById('step-57');
+      //#region 57 almost_ready
+      const step57 = document.getElementById('57');
       step57.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('share');
+        manageNextStep(58);
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-58 share
-      const step58 = document.getElementById('step-58');
+      //#region 58 share
+      const step58 = document.getElementById('58');
       const step58singleChoiceBtns = step58.getElementsByTagName('button');
 
       for (let i = 0; i < step58singleChoiceBtns.length; i++) {
@@ -2428,24 +2427,23 @@
           clearAllSelected(step58singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('share_textbox');
+          if (selectedItem === 'yes') manageNextStep(59);
           if (selectedItem === 'no') {
-            manageNextStep('loader');
-            // Start the loader 1 second after step-60 is displayed
+            manageNextStep(60);
+            // Start the loader 1 second after 60 is displayed
             setTimeout(() => {
               if (document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
             }, 1000);
           }
 
-          manageNextStep('share');
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-59 share_textbox
-      const step59 = document.getElementById('step-59');
+      //#region 59 share_textbox
+      const step59 = document.getElementById('59');
       const step59inp = step59.getElementsByTagName('textarea')[0];
 
       step59inp.name = share_textbox;
@@ -2462,12 +2460,12 @@
           savedAnswers.share_textbox = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          // Start the loader 1 second after step-60 is displayed
+          // Start the loader 1 second after 60 is displayed
           setTimeout(() => {
             if (document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
           }, 1000);
           
-          manageNextStep('loader');
+          manageNextStep(60);
           footerVisibility();
           updateProgressBar();
         }
@@ -2475,8 +2473,8 @@
       })
       //#endregion
 
-      //#region step-60 loader
-      const step60 = document.getElementById('step-60');
+      //#region 60 loader
+      const step60 = document.getElementById('60');
       const step60nextBtn = step60.getElementsByClassName('next-button')[0];
       const circleLoaderProgress = step60.querySelector('.circle-loader-progress');
       const circleLoaderPercentage = step60.querySelector('.circle-loader-percentage');
@@ -2496,13 +2494,13 @@
         savedAnswers.partialSavedInfo = partialSavedInfo
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        const step61items = document.getElementById('step-61').getElementsByClassName('saved-info');
+        const step61items = document.getElementById('61').getElementsByClassName('saved-info');
         for (let i = 0; i < step61items.length; i++) {
           const element = step61items[i];
           element.textContent = partialSavedInfo[i];
         }
 
-        manageNextStep('wellness_profile');
+        manageNextStep(61);
       })
 
       function startCircleLoader() {
@@ -2545,17 +2543,17 @@
       updateProgressBar();
       //#endregion
 
-      //#region step-61 wellness_profile
-      const step61 = document.getElementById('step-61');
+      //#region 61 wellness_profile
+      const step61 = document.getElementById('61');
       step61.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('stripe');
+        manageNextStep(62);
         footerVisibility();
         updateProgressBar();
       })
 
       //#endregion
 
-      //#region step-62 stripe
+      //#region 62 stripe
       //#endregion
 
     });
@@ -2573,7 +2571,7 @@
   </div>
 
   <!-- INPUT example -->
-  <div id="step-1" class="question-holder" name="pet_name">
+  <div id="1" class="question-holder" name="pet_name">
     <h1>What is the name of your pet?</h1>
     <div class="goal-container">
       <input class="goal-option" type="text" placeholder="example: Kloe" maxlength="30">
@@ -2584,7 +2582,7 @@
   </div>
 
   <!-- only SHOW TEXT -->
-  <div id="step-2" class="question-holder" name="thank_you_pawsome">
+  <div id="2" class="question-holder" name="thank_you_pawsome">
     <p>Millions of loved pets face health challenges due to eating food that isn't aligned with their needs.</p>
     <br>
     <p>Many commercially available pet foods are like junk foods for humans. Heavily processed, full of conservants,
@@ -2605,7 +2603,7 @@
     </div>
   </div>
 
-  <div id="step-3" class="question-holder" name="mealplan_goal">
+  <div id="3" class="question-holder" name="mealplan_goal">
     <h1>What do you want to achieve with the meal plan for <span class="pet_name"></span>?</h1>
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this, false)" class="goal-option">to gain weight</button>
@@ -2622,7 +2620,7 @@
     </div>
   </div>
 
-  <div id="step-4" class="question-holder" name="the_solution_is_here">
+  <div id="4" class="question-holder" name="the_solution_is_here">
     <p><b>The solution is here!</b></p>
     <br>
     <p>For owners who want their pet <b class="mealplan_goal"></b> often benefit from a
@@ -2640,7 +2638,7 @@
     </div>
   </div>
 
-  <div id="step-5" class="question-holder" name="species">
+  <div id="5" class="question-holder" name="species">
     <h1><span class="pet_name"></span> is a</h1>
     <div class="goal-container">
       <button class="goal-option">
@@ -2664,7 +2662,7 @@
     </div>
   </div>
 
-  <div id="step-6" class="question-holder" name="breed">
+  <div id="6" class="question-holder" name="breed">
     <h1>What breed is <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <input class="goal-option" type="text" placeholder=" If there is no breed, type 'Mixed' ;) " maxlength="30">
@@ -2674,7 +2672,7 @@
     </div>
   </div>
 
-  <div id="step-7" class="question-holder" name="kiss_ferret">
+  <div id="7" class="question-holder" name="kiss_ferret">
     <p><b>Awww! Our favorite!</b></p>
     <br>
     <p>Kiss <b class="pet_name"></b>'s nose for us ❤️</p>
@@ -2683,7 +2681,7 @@
     </div>
   </div>
 
-  <div id="step-8" class="question-holder" name="gender">
+  <div id="8" class="question-holder" name="gender">
     <h1><b class="pet_name"></b> is</h1>
     <div class="goal-container">
       <button class="goal-option">a lady</button>
@@ -2691,7 +2689,7 @@
     </div>
   </div>
 
-  <div id="step-9" class="question-holder" name="female_castration">
+  <div id="9" class="question-holder" name="female_castration">
     <h1>And is</h1>
     <div class="goal-container">
       <button class="goal-option">intact</button>
@@ -2702,7 +2700,7 @@
     </div>
   </div>
 
-  <div id="step-10" class="question-holder" name="male_castration">
+  <div id="10" class="question-holder" name="male_castration">
     <h1>And is</h1>
     <div class="goal-container">
       <button class="goal-option">intact</button>
@@ -2711,7 +2709,7 @@
     </div>
   </div>
 
-  <div id="step-11" class="question-holder" name="due_date">
+  <div id="11" class="question-holder" name="due_date">
     <h1>Aww! Congrats! When is the due date?</h1>
     <div class="goal-container">
       <input class="goal-option" type="date">
@@ -2721,7 +2719,7 @@
     </div>
   </div>
 
-  <div id="step-12" class="question-holder" name="numer_of_babies">
+  <div id="12" class="question-holder" name="numer_of_babies">
     <h1>How many babies has she?</h1>
     <div class="goal-container">
       <input class="goal-option" type="number" value="0" min="0" max="100">
@@ -2737,7 +2735,7 @@
     </div>
   </div>
 
-  <div id="step-13" class="question-holder" name="ferret_age">
+  <div id="13" class="question-holder" name="ferret_age">
     <h1>How old is <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">baby (up to 5 months old)</button>
@@ -2747,7 +2745,7 @@
     </div>
   </div>
 
-  <div id="step-14" class="question-holder" name="cat_age">
+  <div id="14" class="question-holder" name="cat_age">
     <h1>How old is <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">kitty (up to 5 months old)</button>
@@ -2759,7 +2757,7 @@
     </div>
   </div>
 
-  <div id="step-15" class="question-holder" name="dog_age">
+  <div id="15" class="question-holder" name="dog_age">
     <h1>How old is <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">puppy (up to 5 months old)</button>
@@ -2770,7 +2768,7 @@
     </div>
   </div>
 
-  <div id="step-16" class="question-holder" name="housing">
+  <div id="16" class="question-holder" name="housing">
     <h1>Where does <b class="pet_name"></b> sleep during the night?</h1>
     <div class="goal-container">
       <button class="goal-option">in house</button>
@@ -2779,7 +2777,7 @@
     </div>
   </div>
 
-  <div id="step-17" class="question-holder" name="ferret_activity">
+  <div id="17" class="question-holder" name="ferret_activity">
     <h1>How active is <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">4+ hours of playing, exploring and doing ferret things</button>
@@ -2789,7 +2787,7 @@
     </div>
   </div>
 
-  <div id="step-18" class="question-holder" name="cat_activity">
+  <div id="18" class="question-holder" name="cat_activity">
     <h1>How active is <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">6+ hours of playing and doing cat things</button>
@@ -2799,7 +2797,7 @@
     </div>
   </div>
 
-  <div id="step-19" class="question-holder" name="dog_activity">
+  <div id="19" class="question-holder" name="dog_activity">
     <h1>How active is <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">6+ hours of playing, walking and doing dog things</button>
@@ -2809,7 +2807,7 @@
     </div>
   </div>
 
-  <div id="step-20" class="question-holder" name="ferret_body_condition">
+  <div id="20" class="question-holder" name="ferret_body_condition">
     <h1>How do you assess the body condition of <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">emaciated (ribs, spine, hip bones are visible)</button>
@@ -2822,7 +2820,7 @@
     </div>
   </div>
 
-  <div id="step-21" class="question-holder" name="cat_body_condition">
+  <div id="21" class="question-holder" name="cat_body_condition">
     <h1>Which picture is closest to <b class="pet_name"></b> appearance?</h1>
     <div class="goal-container">
       <button class="goal-option">emaciated</button>
@@ -2832,7 +2830,7 @@
     </div>
   </div>
 
-  <div id="step-22" class="question-holder" name="dog_body_condition">
+  <div id="22" class="question-holder" name="dog_body_condition">
     <h1>Which picture is closest to <b class="pet_name"></b> appearance?</h1>
     <div class="goal-container">
       <button class="goal-option">emaciated</button>
@@ -2842,7 +2840,7 @@
     </div>
   </div>
 
-  <div id="step-23" class="question-holder" name="current_weight">
+  <div id="23" class="question-holder" name="current_weight">
     <h1>What is <b class="pet_name"></b>'s current weight?</h1>
     <div class="goal-container">
       <input class="goal-option" type="number" min="0" max="999" value="0" step=".01">
@@ -2858,7 +2856,7 @@
   </div>
 
   <!-- SINGLECHOICE example -->
-  <div id="step-24" class="question-holder" name="health_condition">
+  <div id="24" class="question-holder" name="health_condition">
     <h1>Does <b class="pet_name"></b> have a diagnosed health condition?</h1>
     <div class="goal-container">
       <button class="goal-option">yes</button>
@@ -2866,7 +2864,7 @@
     </div>
   </div>
 
-  <div id="step-25" class="question-holder" name="no_health_conditions">
+  <div id="25" class="question-holder" name="no_health_conditions">
     <h1>That's amazing!</h1>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
@@ -2874,7 +2872,7 @@
   </div>
 
   <!-- MULTICHOICE example -->
-  <div id="step-26" class="question-holder" name="health_condition_checkbox">
+  <div id="26" class="question-holder" name="health_condition_checkbox">
     <h1>What is the health condition? (choose all that apply)</h1>
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this, false)" class="goal-option">kidney disease</button>
@@ -2894,7 +2892,7 @@
   </div>
 
   <!-- TEXTAREA example -->
-  <div id="step-27" class="question-holder" name="health_condition_text">
+  <div id="27" class="question-holder" name="health_condition_text">
     <h1>Can you give us more details about the condition?</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -2905,7 +2903,7 @@
   </div>
 
   <!-- UPLOAD FILE example -->
-  <div id="step-28" class="question-holder" name="bloodwork_file_upload">
+  <div id="28" class="question-holder" name="bloodwork_file_upload">
     <h1>Upload the last blood work here if such available.</h1>
     <div class="goal-container">
       <div class="file-upload-container">
@@ -2921,7 +2919,7 @@
     </div>
   </div>
 
-  <div id="step-29" class="question-holder" name="pills">
+  <div id="29" class="question-holder" name="pills">
     <h1>Does <b class="pet_name"></b> take medicines or food supplements?</h1>
     <div class="goal-container">
       <button class="goal-option">yes</button>
@@ -2929,7 +2927,7 @@
     </div>
   </div>
 
-  <div id="step-30" class="question-holder" name="pills_text">
+  <div id="30" class="question-holder" name="pills_text">
     <h1>What medicines and/or food supplements?</h1>
     <div class="goal-container">
       <textarea class="goal-option"
@@ -2941,7 +2939,7 @@
     </div>
   </div>
 
-  <div id="step-31" class="question-holder" name="health_issues_checkbox_1">
+  <div id="31" class="question-holder" name="health_issues_checkbox_1">
     <h1>Have any of the following been observed in the last few months? </h1>
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, weight loss</button>
@@ -2956,7 +2954,7 @@
     </div>
   </div>
 
-  <div id="step-32" class="question-holder" name="health_condition_text_1">
+  <div id="32" class="question-holder" name="health_condition_text_1">
     <h1>Tell us more, please.</h1>
     <div class="goal-container">
       <textarea class="goal-option"
@@ -2967,7 +2965,7 @@
     </div>
   </div>
 
-  <div id="step-33" class="question-holder" name="behavior_change_checkbox">
+  <div id="33" class="question-holder" name="behavior_change_checkbox">
     <h1>Have you noticed a change in your pet's behavior or habits?</h1>
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, when peeing</button>
@@ -2982,7 +2980,7 @@
     </div>
   </div>
 
-  <div id="step-34" class="question-holder" name="behavior_change_text">
+  <div id="34" class="question-holder" name="behavior_change_text">
     <h1>Tell us more, please.</h1>
     <div class="goal-container">
       <textarea class="goal-option"
@@ -2994,7 +2992,7 @@
     </div>
   </div>
 
-  <div id="step-35" class="question-holder" name="food_allergies">
+  <div id="35" class="question-holder" name="food_allergies">
     <h1>Does <b class="pet_name"></b> has food allergies and/or intolerances?</h1>
     <div class="goal-container">
       <button class="goal-option">yes</button>
@@ -3002,7 +3000,7 @@
     </div>
   </div>
 
-  <div id="step-36" class="question-holder" name="health_condition_text_2">
+  <div id="36" class="question-holder" name="health_condition_text_2">
     <h1>What allergies and intolerances has the <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <textarea class="goal-option" placeholder="Example: my dog is allergic to chicken meat and by-products"
@@ -3013,7 +3011,7 @@
     </div>
   </div>
 
-  <div id="step-37" class="question-holder" name="allergy_symptoms">
+  <div id="37" class="question-holder" name="allergy_symptoms">
     <h1>What are the symptoms when <b class="pet_name"></b> eats a problematic food?</h1>
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this)" class="goal-option">tummy ache</button>
@@ -3029,7 +3027,7 @@
     </div>
   </div>
 
-  <div id="step-38" class="question-holder" name="symptomes_text">
+  <div id="38" class="question-holder" name="symptomes_text">
     <h1>Tell us more</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3039,7 +3037,7 @@
     </div>
   </div>
 
-  <div id="step-39" class="question-holder" name="contact_info">
+  <div id="39" class="question-holder" name="contact_info">
     <h1>At what email can we reach you if we have additional questions?</h1>
     <div class="goal-container">
       <input class="goal-option" type="email" maxlength="100">
@@ -3056,7 +3054,7 @@
     </div>
   </div>
 
-  <div id="step-40" class="question-holder" name="peaky_eater">
+  <div id="40" class="question-holder" name="peaky_eater">
     <h1>Is <b class="pet_name"></b> a peaky eater?</h1>
     <div class="goal-container">
       <button class="goal-option">yes</button>
@@ -3064,7 +3062,7 @@
     </div>
   </div>
 
-  <div id="step-41" class="question-holder" name="current_food">
+  <div id="41" class="question-holder" name="current_food">
     <h1>What's the main source of food for the <b class="pet_name"></b> right now?</h1>
     <div class="goal-container">
       <button class="goal-option">kibble</button>
@@ -3073,7 +3071,7 @@
     </div>
   </div>
 
-  <div id="step-42" class="question-holder" name="food_brand">
+  <div id="42" class="question-holder" name="food_brand">
     <h1>What brand of food and how much do you feed per day?</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3083,7 +3081,7 @@
     </div>
   </div>
 
-  <div id="step-43" class="question-holder" name="homemade_food">
+  <div id="43" class="question-holder" name="homemade_food">
     <h1>Please, share what is included in the recipe and how much do you feed per day.</h1>
     <div class="goal-container">
       <textarea class="goal-option"
@@ -3094,7 +3092,7 @@
     </div>
   </div>
 
-  <div id="step-44" class="question-holder" name="food_likes">
+  <div id="44" class="question-holder" name="food_likes">
     <h1>What does <b class="pet_name"></b> like to eat? (select multiple foods)</h1>
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this)" class="goal-option">chicken meat </button>
@@ -3133,7 +3131,7 @@
     </div>
   </div>
 
-  <div id="step-45" class="question-holder" name="additional_likes">
+  <div id="45" class="question-holder" name="additional_likes">
     <h1>What else <b class="pet_name"></b> likes to eat?</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3143,7 +3141,7 @@
     </div>
   </div>
 
-  <div id="step-46" class="question-holder" name="doesnt_likes">
+  <div id="46" class="question-holder" name="doesnt_likes">
     <h1>What does NOT <b class="pet_name"></b> eat?</h1>
     <h2 class="danger">Please, select foods that the pet doesn't eat at all or reacts to. If you are not sure if it eats
       it - don't select it.</h2>
@@ -3185,7 +3183,7 @@
     </div>
   </div>
 
-  <div id="step-47" class="question-holder" name="doesnt_likes_other">
+  <div id="47" class="question-holder" name="doesnt_likes_other">
     <h1>What else she/he doesn't like?</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3195,7 +3193,7 @@
     </div>
   </div>
 
-  <div id="step-48" class="question-holder" name="rewards">
+  <div id="48" class="question-holder" name="rewards">
     <h1>Does <b class="pet_name"></b> eat rewards?</h1>
     <div class="goal-container">
       <button class="goal-option">yes</button>
@@ -3203,7 +3201,7 @@
     </div>
   </div>
 
-  <div id="step-49" class="question-holder" name="rewards_text">
+  <div id="49" class="question-holder" name="rewards_text">
     <h1>What rewards? How often and how much?</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3213,7 +3211,7 @@
     </div>
   </div>
 
-  <div id="step-50" class="question-holder" name="food_access">
+  <div id="50" class="question-holder" name="food_access">
     <h1>Does <b class="pet_name"></b> have constant access to food?</h1>
     <div class="goal-container">
       <button class="goal-option">yes</button>
@@ -3222,7 +3220,7 @@
     </div>
   </div>
 
-  <div id="step-51" class="question-holder" name="doesnt_likes_other_2">
+  <div id="51" class="question-holder" name="doesnt_likes_other_2">
     <h1>Tell us more, please.</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3232,7 +3230,7 @@
     </div>
   </div>
 
-  <div id="step-52" class="question-holder" name="other_pets">
+  <div id="52" class="question-holder" name="other_pets">
     <h1>Does <b class="pet_name"></b> eat with other pet(s)?</h1>
     <div class="goal-container">
       <button class="goal-option">no</button>
@@ -3241,7 +3239,7 @@
     </div>
   </div>
 
-  <div id="step-53" class="question-holder" name="food_tracking">
+  <div id="53" class="question-holder" name="food_tracking">
     <h1>Can you track how much the <b class="pet_name"></b> eat per day?</h1>
     <div class="goal-container">
       <button class="goal-option">no</button>
@@ -3250,7 +3248,7 @@
     </div>
   </div>
 
-  <div id="step-54" class="question-holder" name="begging">
+  <div id="54" class="question-holder" name="begging">
     <h1>Is <b class="pet_name"></b> begging for food?</h1>
     <div class="goal-container">
       <button class="goal-option">no</button>
@@ -3259,7 +3257,7 @@
     </div>
   </div>
 
-  <div id="step-55" class="question-holder" name="begging_text">
+  <div id="55" class="question-holder" name="begging_text">
     <h1>For what food?</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3269,7 +3267,7 @@
     </div>
   </div>
 
-  <div id="step-56" class="question-holder" name="people_feeding">
+  <div id="56" class="question-holder" name="people_feeding">
     <h1>Who feeds <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <button class="goal-option">only I</button>
@@ -3277,7 +3275,7 @@
     </div>
   </div>
 
-  <div id="step-57" class="question-holder" name="almost_ready">
+  <div id="57" class="question-holder" name="almost_ready">
     <h1>We are almost ready :)</h1>
     <div class="next-button-holder">
       <div class="next-button-holder">
@@ -3286,7 +3284,7 @@
     </div>
   </div>
 
-  <div id="step-58" class="question-holder" name="share">
+  <div id="58" class="question-holder" name="share">
     <h1>Do you want to share something else with us?</h1>
     <div class="goal-container">
       <button class="goal-option">yes</button>
@@ -3294,7 +3292,7 @@
     </div>
   </div>
 
-  <div id="step-59" class="question-holder" name="share_textbox">
+  <div id="59" class="question-holder" name="share_textbox">
     <h1>Please, share it here</h1>
     <div class="goal-container">
       <textarea class="goal-option" name=""></textarea>
@@ -3304,7 +3302,7 @@
     </div>
   </div>
 
-  <div id="step-60" class="question-holder" name="loader">
+  <div id="60" class="question-holder" name="loader">
     <h1>Creating your pet's meal plan...</h1>
     <div class="circle-loader-container">
       <div class="circle-loader">
@@ -3317,7 +3315,8 @@
     </div>
   </div>
 
-  <div id="step-61" class="question-holder" name="wellness_profile">
+  <div id="61" class="question-holder" name="wellness_profile">
+    <h1>Here is <b class="pet_name"></b><b>'s</b> wellness profile</h1>
     <div>
       <b>Goal:</b> <span class="saved-info"></span>
     </div>
@@ -3346,7 +3345,7 @@
     </div>
   </div>
 
-  <div id="step-62" class="question-holder" name="stripe">
+  <div id="62" class="question-holder" name="stripe">
     <h1>STRIPE</h1>
   </div>
 
