@@ -518,32 +518,23 @@
     //#endregion 
 
     document.addEventListener('DOMContentLoaded', function () {
-      //#region Get/create steps from/in localStorage
-      let steps = localStorage.getItem('steps');
-      if (steps === null) {
-        steps = ['pet_name'];
-        localStorage.setItem('steps', JSON.stringify(steps));
+      //#region Get/create currentStep from/in localStorage
+      let currentStep = localStorage.getItem('currentStep');
+      if (currentStep === null) {
+        currentStep = 1;
+        localStorage.setItem('currentStep', currentStep);
       } else {
-        steps = JSON.parse(steps);
-      }
-      
-      document.getElementsByName(steps[steps.length - 1])[0].style.display = 'block';
-      //#endregion
-      
-      function manageNextStep(nextStepName) {
-        document.getElementsByName(steps[steps.length - 1])[0].style.display = 'none';
-        steps.push(nextStepName)
-        localStorage.setItem('steps', JSON.stringify(steps));
-        document.getElementsByName(steps[steps.length - 1])[0].style.display = 'block';
+        currentStep = Number(currentStep);
       }
 
-      const totalSteps = document.querySelectorAll('.question-holder').length;
+      document.getElementById(`step-${currentStep}`).style.display = 'block';
+      //#endregion
+
       const footer = document.getElementsByClassName('footer')[0];
-      const footerVisibility = () => { steps[steps.length - 1] === 'pet_name' ? footer.style.display = 'block' : footer.style.display = 'none'; };
+      const footerVisibility = () => { currentStep === 1 ? footer.style.display = 'block' : footer.style.display = 'none'; };
 
       footerVisibility();
       updateProgressBar();
-      steps[steps.length - 1]
 
       //#region Get/create savedAnswers from/in localStorage
       let savedAnswers = JSON.parse(localStorage.getItem('savedAnswers'));
@@ -995,22 +986,100 @@
       //#region Add click event on Previous question button
       const prevQuestionBtn = document.getElementsByClassName('back-arrow')[0];
       prevQuestionBtn.addEventListener('click', () => {
-        if (steps.length > 1) {
-          document.getElementsByName(steps[steps.length - 1])[0].style.display = 'none';
-          steps.pop();
-          localStorage.setItem('steps', JSON.stringify(steps));
-          document.getElementsByName(steps[steps.length - 1])[0].style.display = 'block';
+        if (currentStep > 1) {
+          document.getElementById(`step-${currentStep}`).style.display = 'none';
+
+          if (
+            currentStep === 7 ||
+            currentStep === 10 ||
+            currentStep === 11 ||
+            currentStep === 31 ||
+            currentStep === 35 ||
+            currentStep === 37 ||
+            currentStep === 39 ||
+            currentStep === 46 ||
+            currentStep === 48 ||
+            currentStep === 50 ||
+            currentStep === 52 ||
+            currentStep === 56 ||
+            currentStep === 60
+          ) {
+            currentStep -= 1;
+          }
+
+          if (currentStep === 8 && savedAnswers.species !== 'ferret') currentStep -= 1;
+
+          if (currentStep === 12) {
+            currentStep -= 2;
+          }
+
+          if (currentStep === 13) {
+            if (savedAnswers?.gender === 'a gentleman') currentStep -= 2;
+            if ((savedAnswers?.female_castration === 'intact' || savedAnswers?.female_castration === 'fixed' || savedAnswers?.female_castration === 'chemically castrated')) currentStep -= 3;
+            if (savedAnswers?.female_castration === 'pregnant') currentStep -= 1;
+          }
+
+          if (currentStep === 14) {
+            if (savedAnswers?.gender === "a gentleman") currentStep -= 3;
+            if (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated") currentStep -= 4;
+            if (savedAnswers?.female_castration === 'pregnant') currentStep -= 2;
+            if (savedAnswers?.female_castration === 'nursing') currentStep -= 1;
+          }
+
+          if (currentStep === 15) {
+            if (savedAnswers?.gender === "a gentleman") currentStep -= 4;
+            if (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated") currentStep -= 5;
+            if (savedAnswers?.female_castration === 'pregnant') currentStep -= 3;
+            if (savedAnswers?.female_castration === 'nursing') currentStep -= 2;
+          }
+
+          if (currentStep === 16) {
+            if (savedAnswers?.ferret_age) currentStep -= 2;
+            if (savedAnswers?.cat_age) currentStep -= 1;
+          }
+
+          if (currentStep === 18) {
+            currentStep -= 1;
+          }
+
+          if (currentStep === 19 || currentStep === 20 || currentStep === 21 || currentStep === 22) {
+            currentStep -= 2;
+          }
+
+          if (currentStep === 23) {
+            if (savedAnswers.species === 'cat') currentStep -= 1;
+            if (savedAnswers.species === 'ferret') currentStep -= 2;
+          }
+
+          if (currentStep === 26) {
+            if (savedAnswers.health_condition === 'yes') currentStep -= 1;
+          }
+
+          if (currentStep === 29) {
+            if (savedAnswers.health_condition === 'no') currentStep -= 3;
+          }
+
+          if (currentStep === 33 && savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') currentStep -= 1;
+
+          if (currentStep === 43) {
+            if (savedAnswers.current_food === 'homemade food') currentStep -= 1;
+
+          }
+
+          currentStep -= 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
-     
+
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
       function updateProgressBar() {
-        // ZAK tyk 6te ima bug kato se stigne na posledna stupka - nqma da e pulen progress bara
-        const currentStep = steps.length;
-        const progressPercentage = (currentStep / totalSteps) * 100;
+        const totalSteps = document.querySelectorAll('.question-holder').length;
+        const currentStep = parseInt(localStorage.getItem('currentStep') || '1');
+        const progressPercentage = ((currentStep - 1) / totalSteps) * 100;
 
         const progressBar = document.querySelector('.progress-bar');
         if (progressBar) {
@@ -1018,7 +1087,7 @@
         }
       }
 
-      //#region step-1 pet_name INPUT example
+      //#region step-1 INPUT example
       const step1 = document.getElementById('step-1');
       const step1inp = step1.getElementsByTagName('input')[0];
 
@@ -1039,7 +1108,10 @@
 
           for (let i = 0; i < pet_name_items.length; i++) pet_name_items[i].textContent = value
 
-          manageNextStep('thank_you_pawsome');
+          step1.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
         footerVisibility();
@@ -1047,16 +1119,20 @@
       })
       //#endregion
 
-      //#region step-2 thank_you_pawsomeonly SHOW TEXT
+      //#region step-2 only SHOW TEXT
       const step2 = document.getElementById('step-2');
       step2.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('mealplan_goal');
+        currentStep += 1;
+        step2.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-3 mealplan_goal
+      //#region step-3
       const step3 = document.getElementById('step-3');
       step3.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step3.getElementsByClassName('goal-option'))
@@ -1070,24 +1146,30 @@
 
         savedAnswers.mealplan_goal = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
+        step3.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
-        manageNextStep('the_solution_is_here');
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-4 the_solution_is_here
+      //#region step-4
       const step4 = document.getElementById('step-4');
       step4.getElementsByClassName('next-button')[0].addEventListener('click', function () {
+        step4.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
-        manageNextStep('species');
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-5 species
+      //#region step-5
       const step5 = document.getElementById('step-5');
       const step5singleChoiceBtns = step5.getElementsByTagName('button');
 
@@ -1114,16 +1196,20 @@
           clearAllSelected(step5singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'ferret') manageNextStep('kiss_ferret');
-          if (selectedItem === 'cat' || selectedItem === 'dog') manageNextStep('breed');
+          step5.style.display = 'none';
+          currentStep += 1;
 
+          if (selectedItem === 'ferret') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-6 breed
+      //#region step-6
       const step6 = document.getElementById('step-6');
       const step6inp = step6.getElementsByTagName('input')[0];
 
@@ -1138,7 +1224,11 @@
         if (value.length > 0) {
           savedAnswers.breed = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-          manageNextStep('gender');
+
+          step6.style.display = 'none';
+          currentStep += 2;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
         footerVisibility();
@@ -1146,17 +1236,21 @@
       })
       //#endregion
 
-      //#region step-7 kiss_ferret
+      //#region step-7
       const step7 = document.getElementById('step-7');
       step7.getElementsByClassName('pet_name')[0].textContent = savedAnswers.pet_name;
       step7.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('gender');
+        step7.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-8 gender 
+      //#region step-8
       const step8 = document.getElementById('step-8');
       const step8singleChoiceBtns = step8.getElementsByTagName('button');
 
@@ -1170,16 +1264,18 @@
           clearAllSelected(step8singleChoiceBtns)
           this.classList.add('selected')
 
-          if (textContent === 'a lady') manageNextStep('female_castration');
-          if (textContent === 'a gentleman') manageNextStep('male_castration');
-          
+          step8.style.display = 'none';
+          currentStep += 1;
+          if (textContent === 'a gentleman') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-9 female_castration 
+      //#region step-9
       const step9 = document.getElementById('step-9');
       const step9singleChoiceBtns = step9.getElementsByTagName('button');
 
@@ -1193,19 +1289,21 @@
           clearAllSelected(step9singleChoiceBtns)
           this.classList.add('selected')
 
-          if (savedAnswers?.species === 'ferret' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep('ferret_age');
-          if (savedAnswers?.species === 'cat' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep('cat_age');
-          if (savedAnswers?.species === 'dog' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) manageNextStep('dog_age');
-          if (savedAnswers?.female_castration === "pregnant") manageNextStep('due_date');
-          if (savedAnswers?.female_castration === "nursing") manageNextStep('numer_of_babies');
-
+          step9.style.display = 'none';
+          if (savedAnswers?.species === 'cat' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) currentStep += 5;
+          if (savedAnswers?.species === 'dog' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) currentStep += 6;
+          if (savedAnswers?.species === 'ferret' && (savedAnswers?.female_castration === "intact" || savedAnswers?.female_castration === "fixed" || savedAnswers?.female_castration === "chemically castrated")) currentStep += 4;
+          if (savedAnswers?.female_castration === "pregnant") currentStep += 2;
+          if (savedAnswers?.female_castration === "nursing") currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-10 male_castration
+      //#region step-10
       const step10 = document.getElementById('step-10');
       const step10singleChoiceBtns = step10.getElementsByTagName('button');
 
@@ -1219,17 +1317,19 @@
           clearAllSelected(step10singleChoiceBtns)
           this.classList.add('selected')
 
-          if (savedAnswers?.species === 'ferret') manageNextStep('ferret_age');
-          if (savedAnswers?.species === 'cat') manageNextStep('cat_age');
-          if (savedAnswers?.species === 'dog') manageNextStep('dog_age');
-
+          step10.style.display = 'none';
+          if (savedAnswers?.species === 'ferret') currentStep += 3;
+          if (savedAnswers?.species === 'cat') currentStep += 4;
+          if (savedAnswers?.species === 'dog') currentStep += 5;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-11 due_date
+      //#region step-11
       const step11 = document.getElementById('step-11');
       const step11inp = step11.getElementsByTagName('input')[0];
 
@@ -1248,16 +1348,18 @@
         savedAnswers.due_date = inpVal;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers?.species === "ferret") manageNextStep('ferret_age');
-        if (savedAnswers?.species === "cat") manageNextStep('cat_age');
-        if (savedAnswers?.species === "dog") manageNextStep('dog_age');
-
+        step11.style.display = 'none';
+        if (savedAnswers?.species === "ferret") currentStep += 2;
+        if (savedAnswers?.species === "cat") currentStep += 3;
+        if (savedAnswers?.species === "dog") currentStep += 4;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-12 numer_of_babies
+      //#region step-12
       const step12 = document.getElementById('step-12');
       const step12babiesInp = step12.getElementsByClassName('goal-option')[0];
       const step12bornAtInp = step12.getElementsByClassName('goal-option')[1];
@@ -1284,16 +1386,18 @@
         savedAnswers.babies_dob = step12bornAtVal;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers?.species === "ferret") manageNextStep('ferret_age');
-        if (savedAnswers?.species === "cat") manageNextStep('cat_age');
-        if (savedAnswers?.species === "dog") manageNextStep('dog_age');
-
+        step12.style.display = 'none';
+        if (savedAnswers?.species === "ferret") currentStep += 1;
+        if (savedAnswers?.species === "cat") currentStep += 2;
+        if (savedAnswers?.species === "dog") currentStep += 3;
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-13 ferret_age
+      //#region step-13
       const step13 = document.getElementById('step-13');
       const step13singleChoiceBtns = step13.getElementsByTagName('button');
 
@@ -1306,14 +1410,17 @@
           clearAllSelected(step13singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('housing');
+          step13.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-14 cat_age
+      //#region step-14
       const step14 = document.getElementById('step-14');
       const step14singleChoiceBtns = step14.getElementsByTagName('button');
 
@@ -1326,14 +1433,17 @@
           clearAllSelected(step14singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('housing');
+          step14.style.display = 'none';
+          currentStep += 2;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-15 dog_age
+      //#region step-15
       const step15 = document.getElementById('step-15');
       const step15singleChoiceBtns = step15.getElementsByTagName('button');
 
@@ -1346,14 +1456,17 @@
           clearAllSelected(step15singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('housing');
+          step15.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-16 housing
+      //#region step-16
       const step16 = document.getElementById('step-16');
       const step16singleChoiceBtns = step16.getElementsByTagName('button');
 
@@ -1366,17 +1479,19 @@
           clearAllSelected(step16singleChoiceBtns)
           this.classList.add('selected')
 
-          if (savedAnswers.species === 'ferret') manageNextStep('ferret_activity');
-          if (savedAnswers.species === 'cat') manageNextStep('cat_activity');
-          if (savedAnswers.species === 'dog') manageNextStep('dog_activity');
-
+          step16.style.display = 'none';
+          if (savedAnswers.species === 'ferret') currentStep += 1;
+          if (savedAnswers.species === 'cat') currentStep += 2;
+          if (savedAnswers.species === 'dog') currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-17 ferret_activity
+      //#region step-17
       const step17 = document.getElementById('step-17');
       const step17singleChoiceBtns = step17.getElementsByTagName('button');
 
@@ -1389,14 +1504,17 @@
           clearAllSelected(step17singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('ferret_body_condition');
+          step17.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-18 cat_activity
+      //#region step-18
       const step18 = document.getElementById('step-18');
       const step18singleChoiceBtns = step18.getElementsByTagName('button');
 
@@ -1409,14 +1527,17 @@
           clearAllSelected(step18singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('cat_body_condition');
+          step18.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-19 dog_activity
+      //#region step-19
       const step19 = document.getElementById('step-19');
       const step19singleChoiceBtns = step19.getElementsByTagName('button');
 
@@ -1429,14 +1550,17 @@
           clearAllSelected(step19singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('dog_body_condition');
+          step19.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-20 ferret_body_condition
+      //#region step-20
       const step20 = document.getElementById('step-20');
       const step20singleChoiceBtns = step20.getElementsByTagName('button');
 
@@ -1449,14 +1573,17 @@
           clearAllSelected(step20singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_weight');
+          step20.style.display = 'none';
+          currentStep += 3;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-21 cat_body_condition
+      //#region step-21
       const step21 = document.getElementById('step-21');
       const step21singleChoiceBtns = step21.getElementsByTagName('button');
 
@@ -1469,14 +1596,17 @@
           clearAllSelected(step21singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_weight');
+          step21.style.display = 'none';
+          currentStep += 2;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-22 dog_body_condition
+      //#region step-22
       const step22 = document.getElementById('step-22');
       const step22singleChoiceBtns = step22.getElementsByTagName('button');
 
@@ -1489,14 +1619,17 @@
           clearAllSelected(step22singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_weight');
+          step22.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-23 current_weight
+      //#region step-23
       const step23 = document.getElementById('step-23');
       const step23inp = step23.getElementsByTagName('input')[0];
       const weightToggle = document.getElementById('weight-toggle');
@@ -1531,15 +1664,18 @@
           }
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('health_condition');
-          footerVisibility();
-          updateProgressBar();
+          step23.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-24 health_condition SINGLECHOICE example
+      //#region step-24 SINGLECHOICE example
       const step24 = document.getElementById('step-24');
       const step24singleChoiceBtns = step24.getElementsByTagName('button');
 
@@ -1552,29 +1688,34 @@
           clearAllSelected(step24singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('health_condition_checkbox');
-          if (selectedItem === 'no') manageNextStep('no_health_conditions');
-
+          currentStep += 1;
+          step24.style.display = 'none';
+          if (selectedItem === 'yes') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-25 no_health_conditions
+      //#region step-25
       const step25 = document.getElementById('step-25');
       const step25singleChoiceBtns = step25.getElementsByTagName('button');
 
       for (let i = 0; i < step25singleChoiceBtns.length; i++) {
         step25singleChoiceBtns[i].addEventListener('click', function () {
-          manageNextStep('pills');
+          step25.style.display = 'none';
+          currentStep += 4;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-26 health_condition_checkbox MULTICHOICE example
+      //#region step-26 MULTICHOICE example
       const step26 = document.getElementById('step-26');
       step26.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step26.getElementsByClassName('goal-option'))
@@ -1586,13 +1727,17 @@
         savedAnswers.health_condition_checkbox = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        manageNextStep('health_condition_text');
+        if (savedAnswers.health_condition === 'yes') currentStep += 1;
+        step26.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-27 health_condition_text TEXTAREA example
+      //#region step-27 TEXTAREA example
       const step27 = document.getElementById('step-27');
       const step27inp = step27.getElementsByTagName('textarea')[0];
 
@@ -1610,15 +1755,18 @@
           savedAnswers.health_condition_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('bloodwork_file_upload');
-          footerVisibility();
-          updateProgressBar();
+          if (savedAnswers.health_condition === 'yes') currentStep += 1;
+          step27.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-28 bloodwork_file_upload FILE UPLOAD example
+      //#region step-28 FILE UPLOAD example
       const step28 = document.getElementById('step-28');
       const fileUploadContainer = step28.querySelector('.file-upload-container');
       const fileInput = step28.querySelector('input[type="file"]');
@@ -1681,7 +1829,10 @@
 
       step28.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         // if (fileList.children.length > 0) {
-        manageNextStep('pills');
+        currentStep += 1;
+        step28.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep);
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
         // }
 
         footerVisibility();
@@ -1689,7 +1840,7 @@
       });
       //#endregion
 
-      //#region step-29 pills
+      //#region step-29
       const step29 = document.getElementById('step-29');
       const step29singleChoiceBtns = step29.getElementsByTagName('button');
 
@@ -1702,16 +1853,18 @@
           clearAllSelected(step29singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('pills_text');
-          if (selectedItem === 'no') manageNextStep('health_issues_checkbox_1');
-
+          step29.style.display = 'none';
+          currentStep += 1;
+          if (selectedItem === 'no') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-30 pills_text
+      //#region step-30
       const step30 = document.getElementById('step-30');
       const step30inp = step30.getElementsByTagName('textarea')[0];
 
@@ -1729,15 +1882,18 @@
           savedAnswers.pills_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('health_issues_checkbox_1');
-          footerVisibility();
-          updateProgressBar();
+          step30.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-31 health_issues_checkbox_1
+      //#region step-31
       const step31 = document.getElementById('step-31');
       step31.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step31.getElementsByClassName('goal-option'))
@@ -1749,15 +1905,18 @@
         savedAnswers.health_issues_checkbox_1 = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers.health_issues_checkbox_1[0] !== 'no, all is good') manageNextStep('health_condition_text_1');
-        if (savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') manageNextStep('behavior_change_checkbox');
+        currentStep += 1;
+        if (savedAnswers.health_issues_checkbox_1[0] === 'no, all is good') currentStep += 1;
+        step31.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-32 health_condition_text
+      //#region step-32
       const step32 = document.getElementById('step-32');
       const step32inp = step32.getElementsByTagName('textarea')[0];
 
@@ -1775,15 +1934,18 @@
           savedAnswers.health_issues_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('behavior_change_checkbox');
-          footerVisibility();
-          updateProgressBar();
+          step32.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-33 behavior_change_checkbox
+      //#region step-33
       const step33 = document.getElementById('step-33');
       step33.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step33.getElementsByClassName('goal-option'))
@@ -1795,15 +1957,18 @@
         savedAnswers.behavior_change_checkbox = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions[0] !== 'no, all is good') manageNextStep('behavior_change_text');
-        if (selectedOptions[0] === 'no, all is good') manageNextStep('food_allergies');
+        currentStep += 1;
+        if (selectedOptions[0] === 'no, all is good') currentStep += 1;
+        step33.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-34 behavior_change_text
+      //#region step-34
       const step34 = document.getElementById('step-34');
       const step34inp = step34.getElementsByTagName('textarea')[0];
 
@@ -1821,15 +1986,18 @@
           savedAnswers.behavior_change_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
           
-          manageNextStep('food_allergies');
-          footerVisibility();
-          updateProgressBar();
+          currentStep += 1;
+          step34.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-35 food_allergies
+      //#region step-35
       const step35 = document.getElementById('step-35');
       const step35singleChoiceBtns = step35.getElementsByTagName('button');
 
@@ -1842,8 +2010,11 @@
           clearAllSelected(step35singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('health_condition_text_2');
-          if (selectedItem === 'no') manageNextStep('contact_info');
+          currentStep += 1;
+          if (selectedItem === 'no') currentStep += 1;
+          step35.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           
           footerVisibility();
           updateProgressBar();
@@ -1851,7 +2022,7 @@
       }
       //#endregion
 
-      //#region step-36 health_condition_text
+      //#region step-36
       const step36 = document.getElementById('step-36');
       const step36inp = step36.getElementsByTagName('textarea')[0];
 
@@ -1869,15 +2040,18 @@
           savedAnswers.allergies_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('allergy_symptoms');
-          footerVisibility();
-          updateProgressBar();
+          step36.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-37 allergy_symptoms
+      //#region step-37
       const step37 = document.getElementById('step-37');
       step37.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step37.getElementsByClassName('goal-option'))
@@ -1886,18 +2060,20 @@
 
         if (selectedOptions.length === 0) return;
 
+        currentStep += 1;
+        if (selectedOptions[0] !== 'other') currentStep += 1;
         savedAnswers.allergy_symptoms = selectedOptions;
+        step37.style.display = 'none';
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-
-        if (selectedOptions[0] === 'other') manageNextStep('symptomes_text');
-        if (selectedOptions[0] !== 'other') manageNextStep('contact_info');
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-38 symptomes_text
+      //#region step-38
       const step38 = document.getElementById('step-38');
       const step38inp = step38.getElementsByTagName('textarea')[0];
 
@@ -1915,15 +2091,18 @@
           savedAnswers.symptomes_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('contact_info');
-          footerVisibility();
-          updateProgressBar();
+          step38.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-39 contact_info
+      //#region step-39
       const step39 = document.getElementById('step-39');
       const emailInput = step39.querySelector('input[type="email"]');
       const nameInput = step39.querySelector('input[type="text"]');
@@ -2007,16 +2186,18 @@
         if (email && name && isValidEmail(email) && isValidName(name)) {
           savedAnswers.contact_info = { email, name };
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-
-          manageNextStep('peaky_eater');
-          footerVisibility();
-          updateProgressBar();
+          step39.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep);
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       });
       //#endregion
 
-      //#region step-40 peaky_eater
+      //#region step-40
       const step40 = document.getElementById('step-40');
       const step40singleChoiceBtns = step40.getElementsByTagName('button');
 
@@ -2029,14 +2210,17 @@
           clearAllSelected(step40singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('current_food');
+          step40.style.display = 'none';
+          currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-41 current_food
+      //#region step-41
       const step41 = document.getElementById('step-41');
       const step41singleChoiceBtns = step41.getElementsByTagName('button');
 
@@ -2049,16 +2233,19 @@
           clearAllSelected(step41singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem !== 'homemade food') manageNextStep('food_brand');
-          if (selectedItem === 'homemade food') manageNextStep('homemade_food');
+          if (selectedItem === 'homemade food') currentStep += 2;
+          else currentStep += 1;
 
+          step41.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-42 food_brand
+      //#region step-42
       const step42 = document.getElementById('step-42');
       const step42inp = step42.getElementsByTagName('textarea')[0];
 
@@ -2076,15 +2263,18 @@
           savedAnswers.food_brand = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('food_likes');
-          footerVisibility();
-          updateProgressBar();
+          // if (savedAnswers.health_condition === 'yes') currentStep += 1;
+          // step42.style.display = 'none';
+          // localStorage.setItem('currentStep', currentStep)
+          // document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-43 homemade_food
+      //#region step-43
       const step43 = document.getElementById('step-43');
       const step43inp = step43.getElementsByTagName('textarea')[0];
 
@@ -2102,15 +2292,18 @@
           savedAnswers.homemade_food = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('food_likes');
-          footerVisibility();
-          updateProgressBar();
+          currentStep += 1;
+          step43.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-44 food_likes
+      //#region step-44
       const step44 = document.getElementById('step-44');
       step44.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step44.getElementsByClassName('goal-option'))
@@ -2122,15 +2315,18 @@
         savedAnswers.food_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions[0] === 'other') manageNextStep('additional_likes');
-        if (selectedOptions[0] !== 'other') manageNextStep('doesnt_likes');
+        currentStep += 1;
+        if (selectedOptions[0] !== 'other') currentStep += 1;
+        step44.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-45 additional_likes
+      //#region step-45
       const step45 = document.getElementById('step-45');
       const step45inp = step45.getElementsByTagName('textarea')[0];
 
@@ -2148,15 +2344,18 @@
           savedAnswers.additional_likes = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('doesnt_likes');
-          footerVisibility();
-          updateProgressBar();
+          currentStep += 1;
+          step45.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-46 doesnt_likes
+      //#region step-46
       const step46 = document.getElementById('step-46');
       step46.getElementsByClassName('next-button')[0].addEventListener('click', function () {
         const selectedOptions = Array.from(step46.getElementsByClassName('goal-option'))
@@ -2168,15 +2367,18 @@
         savedAnswers.doesnt_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions[0] === 'other') manageNextStep('doesnt_likes_other');
-        if (selectedOptions[0] !== 'other') manageNextStep('rewards');
+        currentStep += 1;
+        if (selectedOptions[0] !== 'other') currentStep += 1;
+        step46.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-47 doesnt_likes_other
+      //#region step-47
       const step47 = document.getElementById('step-47');
       const step47inp = step47.getElementsByTagName('textarea')[0];
 
@@ -2194,15 +2396,18 @@
           savedAnswers.doesnt_likes_other = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('rewards');
-          footerVisibility();
-          updateProgressBar();
+          currentStep += 1;
+          step47.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-48 rewards
+      //#region step-48
       const step48 = document.getElementById('step-48');
       const step48singleChoiceBtns = step48.getElementsByTagName('button');
 
@@ -2215,16 +2420,18 @@
           clearAllSelected(step48singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('rewards_text');
-          if (selectedItem === 'no') manageNextStep('food_access');
-
+          currentStep += 1;
+          if (selectedItem === 'no') currentStep += 1;
+          step48.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-49 rewards_text
+      //#region step-49
       const step49 = document.getElementById('step-49');
       const step49inp = step49.getElementsByTagName('textarea')[0];
 
@@ -2242,15 +2449,18 @@
           savedAnswers.rewards_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('food_access');
-          footerVisibility();
-          updateProgressBar();
+          currentStep += 1;
+          step49.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-50 food_access
+      //#region step-50
       const step50 = document.getElementById('step-50');
       const step50singleChoiceBtns = step50.getElementsByTagName('button');
 
@@ -2263,16 +2473,18 @@
           clearAllSelected(step50singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'other') manageNextStep('doesnt_likes_other_2');
-          if (selectedItem !== 'other') manageNextStep('other_pets');
-
+          currentStep += 1;
+          if (selectedItem !== 'other') currentStep += 1;
+          step50.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-51 doesnt_likes_other_2
+      //#region step-51
       const step51 = document.getElementById('step-51');
       const step51inp = step51.getElementsByTagName('textarea')[0];
 
@@ -2290,15 +2502,18 @@
           savedAnswers.doesnt_likes_other_2 = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('other_pets');
-          footerVisibility();
-          updateProgressBar();
+          currentStep += 1;
+          step51.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-52 other_pets
+      //#region step-52
       const step52 = document.getElementById('step-52');
       const step52singleChoiceBtns = step52.getElementsByTagName('button');
 
@@ -2311,14 +2526,17 @@
           clearAllSelected(step52singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('food_tracking');
+          currentStep += 1;
+          step52.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-53 food_tracking
+      //#region step-53
       const step53 = document.getElementById('step-53');
       const step53singleChoiceBtns = step53.getElementsByTagName('button');
 
@@ -2331,14 +2549,17 @@
           clearAllSelected(step53singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('begging');
+          currentStep += 1;
+          step53.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-54 begging
+      //#region step-54
       const step54 = document.getElementById('step-54');
       const step54singleChoiceBtns = step54.getElementsByTagName('button');
 
@@ -2351,16 +2572,18 @@
           clearAllSelected(step54singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'sometimes, for certain foods only') manageNextStep('begging_text');
-          if (selectedItem !== 'sometimes, for certain foods only') manageNextStep('people_feeding');
-
+          currentStep += 1;
+          if (selectedItem !== 'sometimes, for certain foods only') currentStep += 1;
+          step54.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-55 begging_text
+      //#region step-55
       const step55 = document.getElementById('step-55');
       const step55inp = step55.getElementsByTagName('textarea')[0];
 
@@ -2378,15 +2601,18 @@
           savedAnswers.begging_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-          manageNextStep('people_feeding');
-          footerVisibility();
-          updateProgressBar();
+          currentStep += 1;
+          step55.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-56 people_feeding
+      //#region step-56
       const step56 = document.getElementById('step-56');
       const step56singleChoiceBtns = step56.getElementsByTagName('button');
 
@@ -2399,23 +2625,31 @@
           clearAllSelected(step56singleChoiceBtns)
           this.classList.add('selected')
 
-          manageNextStep('almost_ready');
+          currentStep += 1;
+          step56.style.display = 'none';
+          if (selectedItem === 'yes') currentStep += 1;
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-57 almost_ready
+      //#region step-57
       const step57 = document.getElementById('step-57');
       step57.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('share');
+        currentStep += 1;
+        step57.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+
         footerVisibility();
         updateProgressBar();
       })
       //#endregion
 
-      //#region step-58 share
+      //#region step-58
       const step58 = document.getElementById('step-58');
       const step58singleChoiceBtns = step58.getElementsByTagName('button');
 
@@ -2428,23 +2662,26 @@
           clearAllSelected(step58singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') manageNextStep('share_textbox');
+          currentStep += 1;
           if (selectedItem === 'no') {
-            manageNextStep('loader');
+            currentStep += 1;
+
             // Start the loader 1 second after step-60 is displayed
             setTimeout(() => {
               if (document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
             }, 1000);
           }
 
-          manageNextStep('share');
+          step58.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
           footerVisibility();
           updateProgressBar();
         })
       }
       //#endregion
 
-      //#region step-59 share_textbox
+      //#region step-59
       const step59 = document.getElementById('step-59');
       const step59inp = step59.getElementsByTagName('textarea')[0];
 
@@ -2462,20 +2699,23 @@
           savedAnswers.share_textbox = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
+          currentStep += 1;
+          step59.style.display = 'none';
+          localStorage.setItem('currentStep', currentStep)
+          document.getElementById(`step-${currentStep}`).style.display = 'block';
+
           // Start the loader 1 second after step-60 is displayed
           setTimeout(() => {
             if (document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
           }, 1000);
-          
-          manageNextStep('loader');
-          footerVisibility();
-          updateProgressBar();
         }
 
+        footerVisibility();
+        updateProgressBar();
       })
       //#endregion
 
-      //#region step-60 loader
+      //#region step-60
       const step60 = document.getElementById('step-60');
       const step60nextBtn = step60.getElementsByClassName('next-button')[0];
       const circleLoaderProgress = step60.querySelector('.circle-loader-progress');
@@ -2502,8 +2742,12 @@
           element.textContent = partialSavedInfo[i];
         }
 
-        manageNextStep('wellness_profile');
+        step60.style.display = 'none';
+        currentStep += 1;
+        localStorage.setItem('currentStep', currentStep);
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
       })
+
 
       function startCircleLoader() {
         circleLoaderProgress.style.height = '0%';
@@ -2545,17 +2789,17 @@
       updateProgressBar();
       //#endregion
 
-      //#region step-61 wellness_profile
+      //#region step-61
       const step61 = document.getElementById('step-61');
       step61.getElementsByClassName('next-button')[0].addEventListener('click', function () {
-        manageNextStep('stripe');
+        currentStep += 1;
+        step61.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
         footerVisibility();
         updateProgressBar();
       })
 
-      //#endregion
-
-      //#region step-62 stripe
       //#endregion
 
     });
@@ -2877,16 +3121,16 @@
   <div id="step-26" class="question-holder" name="health_condition_checkbox">
     <h1>What is the health condition? (choose all that apply)</h1>
     <div class="goal-container">
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">kidney disease</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">diabetes</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">pacreatitis</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">liver disease</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">gastrointestinal issues</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">skin issues</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">cancer</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">insulinoma</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">adrenal disease</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">other</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">kidney disease</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">diabetes</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">pacreatitis</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">liver disease</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">gastrointestinal issues</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">skin issues</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">cancer</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">insulinoma</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">adrenal disease</button>
+      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
@@ -2956,7 +3200,7 @@
     </div>
   </div>
 
-  <div id="step-32" class="question-holder" name="health_condition_text_1">
+  <div id="step-32" class="question-holder" name="health_condition_text">
     <h1>Tell us more, please.</h1>
     <div class="goal-container">
       <textarea class="goal-option"
@@ -3002,7 +3246,7 @@
     </div>
   </div>
 
-  <div id="step-36" class="question-holder" name="health_condition_text_2">
+  <div id="step-36" class="question-holder" name="health_condition_text">
     <h1>What allergies and intolerances has the <b class="pet_name"></b>?</h1>
     <div class="goal-container">
       <textarea class="goal-option" placeholder="Example: my dog is allergic to chicken meat and by-products"
@@ -3346,7 +3590,7 @@
     </div>
   </div>
 
-  <div id="step-62" class="question-holder" name="stripe">
+  <div id="step-62" class="question-holder" name="">
     <h1>STRIPE</h1>
   </div>
 
