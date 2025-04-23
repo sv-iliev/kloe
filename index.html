@@ -459,7 +459,7 @@
           siblings.classList.remove('selected');
         }
       } else {
-        elSiblings.item(elSiblings.length - 1).classList.remove('selected');
+        if (exeption !== false) elSiblings.item(elSiblings.length - 1).classList.remove('selected');
       }
 
       el.classList.toggle("selected");
@@ -991,7 +991,6 @@
 
           if (
             currentStep === 7 ||
-            currentStep === 8 ||
             currentStep === 10 ||
             currentStep === 11 ||
             currentStep === 31 ||
@@ -1006,8 +1005,9 @@
             currentStep === 60
           ) {
             currentStep -= 1;
-            if (savedAnswers.species === 'ferret') currentStep -= 1;
           }
+
+          if (currentStep === 8 && savedAnswers.species !== 'ferret') currentStep -= 1;
 
           if (currentStep === 12) {
             currentStep -= 2;
@@ -1017,7 +1017,6 @@
             if (savedAnswers?.gender === 'a gentleman') currentStep -= 2;
             if ((savedAnswers?.female_castration === 'intact' || savedAnswers?.female_castration === 'fixed' || savedAnswers?.female_castration === 'chemically castrated')) currentStep -= 3;
             if (savedAnswers?.female_castration === 'pregnant') currentStep -= 1;
-            if (savedAnswers?.female_castration === 'nursing') currentStep -= 2;
           }
 
           if (currentStep === 14) {
@@ -1270,6 +1269,7 @@
       for (let i = 0; i < step9singleChoiceBtns.length; i++) {
         step9singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
+          savedAnswers.male_castration = null;
           savedAnswers.female_castration = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
@@ -1297,6 +1297,7 @@
       for (let i = 0; i < step10singleChoiceBtns.length; i++) {
         step10singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
+          savedAnswers.female_castration = null; 
           savedAnswers.male_castration = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
@@ -2838,14 +2839,14 @@
   <div id="step-3" class="question-holder" name="mealplan_goal">
     <h1>What do you want to achieve with the meal plan for <span class="pet_name"></span>?</h1>
     <div class="goal-container">
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to gain weight</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to lose weight</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to get support with health challenges</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to get skin and coat issues resolved</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to get help with food allergy and/or
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to gain weight</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to lose weight</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get support with health challenges</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get skin and coat issues resolved</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get help with food allergy and/or
         intolerances</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to balance better food</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">to have long-term health</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to balance better food</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to have long-term health</button>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
