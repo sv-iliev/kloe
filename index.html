@@ -989,11 +989,21 @@
         if (currentStep > 1) {
           document.getElementById(`step-${currentStep}`).style.display = 'none';
 
-          if (currentStep === 7 ||
+          if (
+            currentStep === 7 ||
             currentStep === 8 ||
             currentStep === 10 ||
             currentStep === 11 ||
-            currentStep === 31
+            currentStep === 31 ||
+            currentStep === 35 ||
+            currentStep === 37 ||
+            currentStep === 39 ||
+            currentStep === 46 ||
+            currentStep === 48 ||
+            currentStep === 50 ||
+            currentStep === 52 ||
+            currentStep === 56 ||
+            currentStep === 60
           ) {
             currentStep -= 1;
             if (savedAnswers.species === 'ferret') currentStep -= 1;
@@ -1933,13 +1943,11 @@
         savedAnswers.behavior_change_checkbox = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (savedAnswers.behavior_change_checkbox.some(answer => answer.indexOf('yes') > -1)) {
-          step33.style.display = 'none';
-          currentStep += 1;
-          localStorage.setItem('currentStep', currentStep)
-          document.getElementById(`step-${currentStep}`).style.display = 'block';
-        }
-
+        currentStep += 1;
+        if (selectedOptions[0] === 'no, all is good') currentStep += 1;
+        step33.style.display = 'none';
+        localStorage.setItem('currentStep', currentStep)
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
 
         footerVisibility();
         updateProgressBar();
@@ -1963,9 +1971,9 @@
           const value = step34inp.value;
           savedAnswers.behavior_change_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-
+          
+          currentStep += 1;
           step34.style.display = 'none';
-          if (savedAnswers.health_condition === 'yes') currentStep += 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
         }
@@ -1988,10 +1996,12 @@
           clearAllSelected(step35singleChoiceBtns)
           this.classList.add('selected')
 
+          currentStep += 1;
+          if (selectedItem === 'no') currentStep += 1;
           step35.style.display = 'none';
-          if (savedAnswers.behavior_change_checkbox.some(answer => answer.indexOf('yes') > -1)) currentStep += 1;
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
+          
           footerVisibility();
           updateProgressBar();
         })
@@ -2036,10 +2046,11 @@
 
         if (selectedOptions.length === 0) return;
 
+        currentStep += 1;
+        if (selectedOptions[0] !== 'other') currentStep += 1;
         savedAnswers.allergy_symptoms = selectedOptions;
-        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-        if (selectedOptions.includes('other')) currentStep += 1;
         step37.style.display = 'none';
+        localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
 
@@ -2290,7 +2301,8 @@
         savedAnswers.food_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions.includes('other')) currentStep += 1;
+        currentStep += 1;
+        if (selectedOptions[0] !== 'other') currentStep += 1;
         step44.style.display = 'none';
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2341,7 +2353,8 @@
         savedAnswers.doesnt_likes = selectedOptions;
         localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
-        if (selectedOptions.includes('other')) currentStep += 1;
+        currentStep += 1;
+        if (selectedOptions[0] !== 'other') currentStep += 1;
         step46.style.display = 'none';
         localStorage.setItem('currentStep', currentStep)
         document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2393,7 +2406,8 @@
           clearAllSelected(step48singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') currentStep += 1;
+          currentStep += 1;
+          if (selectedItem === 'no') currentStep += 1;
           step48.style.display = 'none';
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2445,7 +2459,8 @@
           clearAllSelected(step50singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'other') currentStep += 1;
+          currentStep += 1;
+          if (selectedItem !== 'other') currentStep += 1;
           step50.style.display = 'none';
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2543,7 +2558,8 @@
           clearAllSelected(step54singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') currentStep += 1;
+          currentStep += 1;
+          if (selectedItem !== 'sometimes, for certain foods only') currentStep += 1;
           step54.style.display = 'none';
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2632,7 +2648,16 @@
           clearAllSelected(step58singleChoiceBtns)
           this.classList.add('selected')
 
-          if (selectedItem === 'yes') currentStep += 1;
+          currentStep += 1;
+          if (selectedItem === 'no') {
+            currentStep += 1;
+
+            // Start the loader 1 second after step-60 is displayed
+            setTimeout(() => {
+              if (document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
+            }, 1000);
+          }
+
           step58.style.display = 'none';
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
@@ -2664,8 +2689,6 @@
           step59.style.display = 'none';
           localStorage.setItem('currentStep', currentStep)
           document.getElementById(`step-${currentStep}`).style.display = 'block';
-
-
 
           // Start the loader 1 second after step-60 is displayed
           setTimeout(() => {
@@ -3182,7 +3205,7 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, with water drinking</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, with eating</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">yes, other</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">no, all is good</button>
+      <button onclick="onMultiSelectClick(this, 'no, all is good')" class="goal-option">no, all is good</button>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
@@ -3228,8 +3251,8 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">vomitting</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">itchy skin and/or skin redness</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">breathing troubles</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">no symptoms</button>
+      <button onclick="onMultiSelectClick(this, 'other')" class="goal-option">other</button>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
@@ -3333,7 +3356,7 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">cabbage</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">apples</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">blueberries</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
+      <button onclick="onMultiSelectClick(this, 'other')" class="goal-option">other</button>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
@@ -3385,7 +3408,7 @@
       <button onclick="onMultiSelectClick(this)" class="goal-option">cabbage</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">apples</button>
       <button onclick="onMultiSelectClick(this)" class="goal-option">blueberries</button>
-      <button onclick="onMultiSelectClick(this)" class="goal-option">other</button>
+      <button onclick="onMultiSelectClick(this, 'other')" class="goal-option">other</button>
     </div>
     <div class="next-button-holder">
       <button class="next-button">Next</button>
