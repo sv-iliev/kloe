@@ -432,6 +432,8 @@
     const people_feeding = 'people_feeding';
     const share = 'share';
     const share_textbox = 'share_textbox';
+
+    const textAreaMaxLength = 5000;
     //#endregion
 
     //#region Delete localStorage after 48 hours
@@ -526,10 +528,10 @@
       } else {
         steps = JSON.parse(steps);
       }
-      
+
       document.getElementById(steps[steps.length - 1]).style.display = 'block';
       //#endregion
-      
+
       function manageNextStep(nextStepID) {
         document.getElementById(steps[steps.length - 1]).style.display = 'none';
         steps.push(nextStepID)
@@ -571,8 +573,8 @@
 
         if (savedAnswers?.mealplan_goal) {
           savedAnswers.mealplan_goal.forEach(meal => {
-            const foundBtn = Array.from(document.getElementById('3').getElementsByClassName('goal-option')).filter(btn => btn.textContent === meal)
-            foundBtn[0].classList.add('selected');
+            const foundBtn = Array.from(document.getElementById('3').getElementsByClassName('goal-option')).filter(btn => btn.textContent === meal);
+            if (foundBtn.length > 0) foundBtn[0].classList.add('selected');
           });
 
           const mealplan_goal_items = document.getElementsByClassName(mealplan_goal);
@@ -1011,7 +1013,7 @@
           localStorage.setItem('steps', JSON.stringify(steps));
           document.getElementById(steps[steps.length - 1]).style.display = 'block';
         }
-     
+
         footerVisibility();
         updateProgressBar();
       })
@@ -1107,7 +1109,7 @@
             savedAnswers.ferret_age = null;
             savedAnswers.cat_age = null;
           }
-          
+
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
           clearAllSelected(step5singleChoiceBtns)
@@ -1171,7 +1173,7 @@
 
           if (textContent === 'a lady') manageNextStep(9);
           if (textContent === 'a gentleman') manageNextStep(10);
-          
+
           footerVisibility();
           updateProgressBar();
         })
@@ -1211,7 +1213,7 @@
       for (let i = 0; i < step10singleChoiceBtns.length; i++) {
         step10singleChoiceBtns[i].addEventListener('click', function () {
           const selectedItem = this.textContent.trim();
-          savedAnswers.female_castration = null; 
+          savedAnswers.female_castration = null;
           savedAnswers.male_castration = selectedItem;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
 
@@ -1594,13 +1596,13 @@
       //#region 27 health_condition_text TEXTAREA example
       const step27 = document.getElementById('27');
       const step27inp = step27.getElementsByTagName('textarea')[0];
+      step27inp.maxLength = textAreaMaxLength;
 
       step27inp.name = health_condition_text;
 
       step27inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step27.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -1713,13 +1715,13 @@
       //#region 30 pills_text
       const step30 = document.getElementById('30');
       const step30inp = step30.getElementsByTagName('textarea')[0];
+      step30inp.maxLength = textAreaMaxLength;
 
       step30inp.name = pills_text;
 
       step30inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]\s+/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step30.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -1759,13 +1761,13 @@
       //#region 32 health_condition_text_1
       const step32 = document.getElementById('32');
       const step32inp = step32.getElementsByTagName('textarea')[0];
+      step32inp.maxLength = textAreaMaxLength;
 
       step32inp.name = health_issues_text;
 
       step32inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step32.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -1805,13 +1807,13 @@
       //#region 34 behavior_change_text
       const step34 = document.getElementById('34');
       const step34inp = step34.getElementsByTagName('textarea')[0];
+      step34inp.maxLength = textAreaMaxLength;
 
       step34inp.name = behavior_change_text;
 
       step34inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step34.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -1819,7 +1821,7 @@
           const value = step34inp.value;
           savedAnswers.behavior_change_text = value;
           localStorage.setItem('savedAnswers', JSON.stringify(savedAnswers));
-          
+
           manageNextStep(35);
           footerVisibility();
           updateProgressBar();
@@ -1843,7 +1845,7 @@
 
           if (selectedItem === 'yes') manageNextStep(36);
           if (selectedItem === 'no') manageNextStep(39);
-          
+
           footerVisibility();
           updateProgressBar();
         })
@@ -1853,13 +1855,13 @@
       //#region 36 health_condition_text_2
       const step36 = document.getElementById('36');
       const step36inp = step36.getElementsByTagName('textarea')[0];
+      step36inp.maxLength = textAreaMaxLength;
 
       step36inp.name = allergies_text;
 
       step36inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step36.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -1899,13 +1901,13 @@
       //#region 38 symptomes_text
       const step38 = document.getElementById('38');
       const step38inp = step38.getElementsByTagName('textarea')[0];
+      step38inp.maxLength = textAreaMaxLength;
 
       step38inp.name = symptomes_text;
 
       step38inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step38.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2060,13 +2062,13 @@
       //#region 42 food_brand
       const step42 = document.getElementById('42');
       const step42inp = step42.getElementsByTagName('textarea')[0];
+      step42inp.maxLength = textAreaMaxLength;
 
       step42inp.name = food_brand;
 
       step42inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step42.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2086,13 +2088,13 @@
       //#region 43 homemade_food
       const step43 = document.getElementById('43');
       const step43inp = step43.getElementsByTagName('textarea')[0];
+      step43inp.maxLength = textAreaMaxLength;
 
       step43inp.name = homemade_food;
 
       step43inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step43.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2132,13 +2134,13 @@
       //#region 45 additional_likes
       const step45 = document.getElementById('45');
       const step45inp = step45.getElementsByTagName('textarea')[0];
+      step45inp.maxLength = textAreaMaxLength;
 
       step45inp.name = additional_likes;
 
       step45inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step45.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2178,13 +2180,13 @@
       //#region 47 doesnt_likes_other
       const step47 = document.getElementById('47');
       const step47inp = step47.getElementsByTagName('textarea')[0];
+      step47inp.maxLength = textAreaMaxLength;
 
       step47inp.name = doesnt_likes_other;
 
       step47inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step47.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2226,13 +2228,13 @@
       //#region 49 rewards_text
       const step49 = document.getElementById('49');
       const step49inp = step49.getElementsByTagName('textarea')[0];
+      step49inp.maxLength = textAreaMaxLength;
 
       step49inp.name = rewards_text;
 
       step49inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step49.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2274,13 +2276,13 @@
       //#region 51 doesnt_likes_other_2
       const step51 = document.getElementById('51');
       const step51inp = step51.getElementsByTagName('textarea')[0];
+      step51inp.maxLength = textAreaMaxLength;
 
       step51inp.name = doesnt_likes_other_2;
 
       step51inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step51.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2362,13 +2364,13 @@
       //#region 55 begging_text
       const step55 = document.getElementById('55');
       const step55inp = step55.getElementsByTagName('textarea')[0];
+      step55inp.maxLength = textAreaMaxLength;
 
       step55inp.name = begging_text;
 
       step55inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step55.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2445,13 +2447,13 @@
       //#region 59 share_textbox
       const step59 = document.getElementById('59');
       const step59inp = step59.getElementsByTagName('textarea')[0];
+      step59inp.maxLength = textAreaMaxLength;
 
       step59inp.name = share_textbox;
 
       step59inp.addEventListener('input', function () {
-        // ZAK da se dobavqt nqkakvi ograni4eniq na input
-        // if (this.value.length > 30) return;
-        // this.value = this.value.replace(/[^a-zA-Z0-9а-яА-Я]/g, '');
+        this.value = this.value.replace(/\s{1,}/g, ' ').replace(/[^a-zA-Z0-9а-яА-Я\!\.\,\?]\s/g, '').replace(/[\@\#\$\%\^\&\*\(\)\_\<\>]/g, '');
+        if (this.value.length > textAreaMaxLength) this.value = this.value.substring(0, textAreaMaxLength);
       })
 
       step59.getElementsByClassName('next-button')[0].addEventListener('click', function () {
@@ -2464,7 +2466,7 @@
           setTimeout(() => {
             if (document.getElementsByClassName('circle-loader-percentage')[0].textContent === '0%') startCircleLoader();
           }, 1000);
-          
+
           manageNextStep(60);
           footerVisibility();
           updateProgressBar();
@@ -2608,8 +2610,10 @@
     <div class="goal-container">
       <button onclick="onMultiSelectClick(this, false)" class="goal-option">to gain weight</button>
       <button onclick="onMultiSelectClick(this, false)" class="goal-option">to lose weight</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get support with health challenges</button>
-      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get skin and coat issues resolved</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get support with health
+        challenges</button>
+      <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get skin and coat issues
+        resolved</button>
       <button onclick="onMultiSelectClick(this, false)" class="goal-option">to get help with food allergy and/or
         intolerances</button>
       <button onclick="onMultiSelectClick(this, false)" class="goal-option">to balance better food</button>
